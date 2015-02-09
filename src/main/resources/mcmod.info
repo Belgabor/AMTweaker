@@ -1,0 +1,16 @@
+[
+{
+  "modid": "AMTweaker",
+  "name": "AMTweaker",
+  "description": "Provides Minetweaker integration for Apple, Milk & Tea 2.",
+  "version": "${mod_version}",
+  "mcversion": "${minecraft_version}",
+  "url": "https://github.com/Belgabor/AMTweaker",
+  "updateUrl": "",
+  "authorList": ["Belgabor"],
+  "credits": "defeatedcrow for Apple, Milk & Tea 2, StanHebben for MineTweaker and joshiejack for ModTweaker",
+  "logoFile": "",
+  "screenshots": [],
+  "dependencies": ["MineTewaker3", "DCsAppleMilk"]
+}
+]
