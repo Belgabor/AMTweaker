@@ -40,7 +40,7 @@ public class IceMaker {
         public IceMakerRecipeWrapper(IItemStack output, IItemStack input, IItemStack container) {
             this.output = toStack(output);
             this.container = toStack(container);
-            this.input = toStack(input);
+            this.input = toStack(input, true);
         }
 
         @Override
@@ -129,7 +129,7 @@ public class IceMaker {
         private int charge;
 
         public ChargeItemWrapper(IItemStack item, int charge) {
-            this.item = toStack(item);
+            this.item = toStack(item, true);
             this.charge = charge;
         }
 

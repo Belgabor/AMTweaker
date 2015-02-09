@@ -16,6 +16,7 @@ import stanhebben.zenscript.annotations.ZenMethod;
 import static mods.belgabor.amtweaker.helpers.InputHelper.isABlock;
 import static mods.belgabor.amtweaker.helpers.InputHelper.toStack;
 import static mods.belgabor.amtweaker.helpers.StackHelper.areEqual;
+import static mods.belgabor.amtweaker.helpers.StackHelper.areEqualNull;
 
 @ZenClass("mods.amt.Plate")
 public class Plate {
@@ -51,7 +52,9 @@ public class Plate {
         @Override
         public boolean matches(Object o) {
             IPlateRecipe r = (IPlateRecipe) o;
-            return (r.getInput() != null && areEqual(r.getInput(), input)) && (r.getOutput() != null && areEqual(r.getOutput(), output)) && (r.useOvenRecipe() == isOvenRecipe);
+            return (r.useOvenRecipe() == isOvenRecipe) &&
+                    (areEqualNull(r.getOutput(), output)) &&
+                    (areEqualNull(r.getInput(), input));
         }
     }
 
