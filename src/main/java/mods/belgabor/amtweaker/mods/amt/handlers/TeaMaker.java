@@ -68,9 +68,9 @@ public class TeaMaker {
         private String milk_texture;
 
         public TeaRecipeWrapper(IItemStack output, IItemStack milk_output, IItemStack input, String texture, String milk_texture) {
-            this.output = toStack(output);
-            this.milk_output = toStack(milk_output);
-            this.input = toStack(input);
+            this.output = toStack(output, true);
+            this.milk_output = toStack(milk_output, true);
+            this.input = toStack(input, true);
             this.texture = texture;
             this.milk_texture = milk_texture;
         }
