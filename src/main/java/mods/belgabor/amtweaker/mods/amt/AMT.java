@@ -11,9 +11,9 @@ public class AMT {
         MineTweakerAPI.registerClass(Processor.class);
         MineTweakerAPI.registerClass(IceMaker.class);
         MineTweakerAPI.registerClass(Slag.class);
+        MineTweakerAPI.registerClass(Battery.class);
         /*
         TODO: TeaMaker
-        TODO: Battery
          */
     }
 }

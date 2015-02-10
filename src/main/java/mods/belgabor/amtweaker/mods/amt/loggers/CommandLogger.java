@@ -32,7 +32,6 @@ import mods.defeatedcrow.api.charge.ChargeItemManager;
 import mods.defeatedcrow.api.charge.IChargeItem;
 import mods.defeatedcrow.api.recipe.IChargeIce;
 import mods.defeatedcrow.api.recipe.RecipeRegisterManager;
-import mods.defeatedcrow.recipe.ChargeItemRegister;
 import net.minecraft.item.ItemStack;
 
 /**

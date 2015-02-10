@@ -12,4 +12,5 @@ Early alpha version
 * Ice Maker (add/remove recipe, register/unregister charge item)
 * Slag (add loot)
 * Command: '/minetweaker amt charge' - List charge items
+* Batteries (register/unregister)
 
