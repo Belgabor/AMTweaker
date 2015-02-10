@@ -10,4 +10,6 @@ Early alpha version
 * Evaporator (add/remove recipe)
 * Food Processor/Jaw Crusher (add/remove recipe)
 * Ice Maker (add/remove recipe, register/unregister charge item)
+* Slag (add loot)
+* Command: '/minetweaker amt charge' - List charge items
 
