@@ -21,7 +21,7 @@ import static mods.belgabor.amtweaker.helpers.StackHelper.areEqualNull;
 
 @ZenClass("mods.amt.Processor")
 public class Processor {
-    // Adding a new cooking recipe for the iron plate
+    // Adding a new processor recipe
     @ZenMethod
     public static void addRecipe(IItemStack output, IItemStack secondary, IIngredient[] inputs, boolean isFoodRecipe, float secondaryChance) {
         MineTweakerAPI.apply(new Add(new ProcessorRecipeWrapper(output, secondary, inputs, isFoodRecipe, secondaryChance)));
