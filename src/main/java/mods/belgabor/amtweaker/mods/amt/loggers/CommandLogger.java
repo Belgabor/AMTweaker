@@ -38,6 +38,17 @@ import net.minecraft.item.ItemStack;
  * Created by Belgabor on 10.02.2015.
  */
 public class CommandLogger implements ICommandFunction {
+    public static void register() {
+        MineTweakerAPI.server.addMineTweakerCommand("amt", new String[] {
+                "/minetweaker amt charge",
+                "    list charge items",
+                "/minetweaker amt heat",
+                "    list clay pan and iron plate heat sources",
+                "/minetweaker amt slag",
+                "    list slag loot"
+        }, new CommandLogger());
+    }
+
     private void logBoth(IPlayer player, String s) {
         MineTweakerAPI.logCommand(s);
         player.sendChat(s);
@@ -52,7 +63,7 @@ public class CommandLogger implements ICommandFunction {
         if (arguments.length > 0) {
             if (arguments[0].equalsIgnoreCase("charge")) {
                 logBoth(player, "Battery:");
-                for (IChargeItem i: ChargeItemManager.chargeItem.getChargeItemList()) {
+                for (IChargeItem i : ChargeItemManager.chargeItem.getChargeItemList()) {
                     String s = getItemDeclaration(i.getItem());
                     if (i.returnItem() != null) {
                         s += " --> " + getItemDeclaration(i.returnItem());
@@ -61,8 +72,24 @@ public class CommandLogger implements ICommandFunction {
                     logBoth(player, s);
                 }
                 logBoth(player, "Ice Maker:");
-                for (IChargeIce i: RecipeRegisterManager.iceRecipe.getChargeItemList()) {
+                for (IChargeIce i : RecipeRegisterManager.iceRecipe.getChargeItemList()) {
                     logBoth(player, getItemDeclaration(i.getItem()) + " --- " + i.getItem().getDisplayName() + " (" + i.chargeAmount() + ")");
+                }
+            } else if (arguments[0].equalsIgnoreCase("heat")) {
+                logBoth(player, "Pan:");
+                for (ItemStack i: RecipeRegisterManager.panRecipe.getHeatSourceList()) {
+                    logBoth(player, getItemDeclaration(i) + " -- " + i.getDisplayName());
+                }
+                logBoth(player, "Plate:");
+                for (ItemStack i: RecipeRegisterManager.plateRecipe.getHeatSourceList()) {
+                    logBoth(player, getItemDeclaration(i) + " -- " + i.getDisplayName());
+                }
+            } else if (arguments[0].equalsIgnoreCase("slag")) {
+                for (int l=1; l <= 5; l++) {
+                    logBoth(player, "Tier " + l + ":");
+                    for (ItemStack i: RecipeRegisterManager.slagLoot.getLootList(l)) {
+                        logBoth(player, getItemDeclaration(i) + " -- " + i.getDisplayName());
+                    }
                 }
             } else {
                 player.sendChat("Unknown subcommand: "+arguments[0]);

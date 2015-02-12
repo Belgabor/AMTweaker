@@ -6,7 +6,7 @@ import minetweaker.api.item.IItemStack;
 import mods.belgabor.amtweaker.mods.amt.util.AMTListAddition;
 import mods.belgabor.amtweaker.mods.amt.util.AMTRecipeWrapper;
 import mods.belgabor.amtweaker.util.BaseListRemoval;
-import mods.defeatedcrow.api.recipe.IProsessorRecipe;
+import mods.defeatedcrow.api.recipe.IProcessorRecipe;
 import mods.defeatedcrow.api.recipe.RecipeRegisterManager;
 import net.minecraft.item.ItemStack;
 import stanhebben.zenscript.annotations.ZenClass;
@@ -50,15 +50,15 @@ public class Processor {
         @Override
         public void register() {
             if (secondaryChance != null) {
-                RecipeRegisterManager.prosessorRecipe.addRecipe(output, isFoodRecipe, secondary, secondaryChance.floatValue(), inputs);
+                RecipeRegisterManager.processorRecipe.addRecipe(output, isFoodRecipe, secondary, secondaryChance.floatValue(), inputs);
             } else {
-                RecipeRegisterManager.prosessorRecipe.addRecipe(output, isFoodRecipe, secondary, inputs);
+                RecipeRegisterManager.processorRecipe.addRecipe(output, isFoodRecipe, secondary, inputs);
             }
         }
 
         @Override
         public boolean matches(Object o) {
-            IProsessorRecipe r = (IProsessorRecipe) o;
+            IProcessorRecipe r = (IProcessorRecipe) o;
             return (r.isFoodRecipe() == isFoodRecipe) &&
                    (r.getInput() != null && Arrays.deepEquals(r.getInput(), inputs)) &&
                    (areEqualNull(r.getOutput(), output)) &&
@@ -79,7 +79,7 @@ public class Processor {
     private static class Add extends AMTListAddition {
 
         public Add(ProcessorRecipeWrapper recipe) {
-            super("Processor", RecipeRegisterManager.prosessorRecipe.getRecipes(), recipe);
+            super("Processor", RecipeRegisterManager.processorRecipe.getRecipes(), recipe);
         }
     }
 
@@ -95,13 +95,13 @@ public class Processor {
     //Removes a recipe, apply is never the same for anything, so will always need to override it
     private static class Remove extends BaseListRemoval {
         public Remove(ItemStack stack) {
-            super("Processor", RecipeRegisterManager.prosessorRecipe.getRecipes(), stack);
+            super("Processor", RecipeRegisterManager.processorRecipe.getRecipes(), stack);
         }
 
         //Loops through the registry, to find the item that matches, saves that recipe then removes it
         @Override
         public void apply() {
-            for (IProsessorRecipe r : RecipeRegisterManager.prosessorRecipe.getRecipes()) {
+            for (IProcessorRecipe r : RecipeRegisterManager.processorRecipe.getRecipes()) {
                 if (r.getOutput() != null && areEqual(r.getOutput(), stack)) {
                     recipe = r;
                     break;

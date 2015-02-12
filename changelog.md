@@ -1,6 +1,15 @@
 Changelog
 =========
 
+Version 0.2alpha
+----------------
+* Update to AMT API 2.5 (v2.3c+)
+* Add: heat and slag command
+* Add: slag loot can now be removed
+* Fix: commands disappearing after /mt reload
+* Fix: Stuck heat source and slag loot additions
+
+
 Version 0.1alpha
 ----------------
 Early alpha version

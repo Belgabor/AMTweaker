@@ -120,7 +120,7 @@ public class Plate {
     //Removes a recipe, apply is never the same for anything, so will always need to override it
     private static class PlateBlockAddition extends BlockAddition {
         public PlateBlockAddition(IItemStack block) {
-            super("Cooking Iron Plate Heat Source", block);
+            super("Cooking Iron Plate Heat Source", RecipeRegisterManager.plateRecipe.getHeatSourceList(), block);
         }
 
         //Loops through the registry, to find the item that matches, saves that recipe then removes it

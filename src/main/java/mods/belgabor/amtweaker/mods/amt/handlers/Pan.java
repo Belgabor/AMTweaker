@@ -154,7 +154,7 @@ public class Pan {
 
     private static class PanBlockAddition extends BlockAddition {
         public PanBlockAddition(IItemStack block) {
-            super("Clay Pan Heat Source", block);
+            super("Clay Pan Heat Source", RecipeRegisterManager.panRecipe.getHeatSourceList(), block);
         }
 
         @Override
