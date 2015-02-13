@@ -49,12 +49,20 @@ public class Battery {
     // Adding a new charge item for the ice maker
     @ZenMethod
     public static void registerChargeItem(IItemStack item, IItemStack discharged, int charge) {
-        MineTweakerAPI.apply(new AddCharge(new ChargeItemWrapper(item, discharged, charge)));
+        doRegisterChargeItem(item, discharged, charge);
     }
 
     @ZenMethod
     public static void registerChargeItem(IItemStack item, int charge) {
-        MineTweakerAPI.apply(new AddCharge(new ChargeItemWrapper(item, null, charge)));
+        doRegisterChargeItem(item, null, charge);
+    }
+
+    private static void doRegisterChargeItem(IItemStack item, IItemStack discharged, int charge) {
+        if (item == null) {
+            MineTweakerAPI.getLogger().logError("Battery: item must not be null!");
+            return;
+        }
+        MineTweakerAPI.apply(new AddCharge(new ChargeItemWrapper(item, discharged, charge)));
     }
 
     private static class ChargeItemWrapper extends AMTRecipeWrapper {

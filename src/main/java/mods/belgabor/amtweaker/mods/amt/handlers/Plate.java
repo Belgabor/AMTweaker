@@ -23,6 +23,10 @@ public class Plate {
     // Adding a new cooking recipe for the iron plate
     @ZenMethod
     public static void addRecipe(IItemStack output, IItemStack input, int cookingTime, boolean isOvenRecipe) {
+        if ((output == null) || (input == null)) {
+            MineTweakerAPI.getLogger().logError("Iron Plate: Neither input nor output may be null!");
+            return;
+        }
         MineTweakerAPI.apply(new Add(new PlateRecipeWrapper(output, input, cookingTime, isOvenRecipe)));
     }
 
@@ -110,11 +114,15 @@ public class Plate {
     // Add a heat source
     @ZenMethod
     public static void registerHeatSource(IItemStack block) {
-        if (isABlock(toStack(block))) {
-            MineTweakerAPI.apply(new PlateBlockAddition(block));
-        } else {
-            MineTweakerAPI.getLogger().logError("Heat source for Cooking Iron Plate must be a block: " + toStack(block).getDisplayName());
+        if (block == null) {
+            MineTweakerAPI.getLogger().logError("Iron Plate: Heat source block must not be null!");
+            return;
         }
+        if (!isABlock(toStack(block))) {
+            MineTweakerAPI.getLogger().logError("Heat source for Cooking Iron Plate must be a block: " + toStack(block).getDisplayName());
+            return;
+        }
+        MineTweakerAPI.apply(new PlateBlockAddition(block));
     }
 
     //Removes a recipe, apply is never the same for anything, so will always need to override it

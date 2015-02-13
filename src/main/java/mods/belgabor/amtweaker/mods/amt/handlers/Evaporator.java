@@ -23,12 +23,44 @@ public class Evaporator {
     // Adding a new cooking recipe for the iron plate
     @ZenMethod
     public static void addRecipe(IItemStack output, ILiquidStack secondary, IItemStack input, boolean returnContainer) {
-        MineTweakerAPI.apply(new Add(new EvaporatorRecipeWrapper(output, secondary, input, returnContainer)));
+        doAddRecipe(output, secondary, input, returnContainer);
     }
 
     @ZenMethod
     public static void addRecipe(IItemStack output, ILiquidStack secondary, IItemStack input) {
-        MineTweakerAPI.apply(new Add(new EvaporatorRecipeWrapper(output, secondary, input, true)));
+        doAddRecipe(output, secondary, input, true);
+    }
+
+    @ZenMethod
+    public static void addRecipe(IItemStack output, IItemStack input, boolean returnContainer) {
+        doAddRecipe(output, null, input, returnContainer);
+    }
+
+    @ZenMethod
+    public static void addRecipe(ILiquidStack secondary, IItemStack input, boolean returnContainer) {
+        doAddRecipe(null, secondary, input, returnContainer);
+    }
+
+    @ZenMethod
+    public static void addRecipe(IItemStack output, IItemStack input) {
+        doAddRecipe(output, null, input, true);
+    }
+
+    @ZenMethod
+    public static void addRecipe(ILiquidStack secondary, IItemStack input) {
+        doAddRecipe(null, secondary, input, true);
+    }
+
+    private static void doAddRecipe(IItemStack output, ILiquidStack secondary, IItemStack input, boolean returnContainer) {
+        if (input == null) {
+            MineTweakerAPI.getLogger().logError("Evaporator: Input item must not be null!");
+            return;
+        }
+        if ((output == null) && (secondary == null)) {
+            MineTweakerAPI.getLogger().logError("Evaporator: Primary and secondary output must not both be null!");
+            return;
+        }
+        MineTweakerAPI.apply(new Add(new EvaporatorRecipeWrapper(output, secondary, input, returnContainer)));
     }
 
     private static class EvaporatorRecipeWrapper extends AMTRecipeWrapper {
@@ -60,11 +92,17 @@ public class Evaporator {
 
         @Override
         public String getRecipeInfo() {
-            if (secondary == null) {
-                return this.output.getDisplayName();
-            } else {
-                return this.output.getDisplayName() + " + " + this.secondary.getLocalizedName();
+            String s = "";
+            if (output != null) {
+                s += output.getDisplayName();
             }
+            if (secondary != null) {
+                if (output != null) {
+                    s += " + ";
+                }
+                s += this.secondary.getLocalizedName();
+            }
+            return s;
         }
     }
 

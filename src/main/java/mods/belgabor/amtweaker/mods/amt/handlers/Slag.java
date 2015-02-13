@@ -47,11 +47,15 @@ import static mods.belgabor.amtweaker.helpers.StackHelper.areEqual;
 public class Slag {
     @ZenMethod
     public static void addLoot(IItemStack item, int tier) {
+        if (item == null) {
+            MineTweakerAPI.getLogger().logError("Slag loot: Item must not be null!");
+            return;
+        }
         if (tier <= 0 || tier > 5) {
             MineTweakerAPI.getLogger().logError("Slag loot tier must be 1-5.");
-        } else {
-            MineTweakerAPI.apply(new SlagLootAddAction(item, tier));
+            return;
         }
+        MineTweakerAPI.apply(new SlagLootAddAction(item, tier));
     }
 
     @ZenMethod
@@ -59,9 +63,9 @@ public class Slag {
         //System.out.println("removeLoot: "+item.getDisplayName()+ " "+tier+" "+item.getDamage()+" "+item.getItems().size());
         if (tier <= 0 || tier > 5) {
             MineTweakerAPI.getLogger().logError("Slag loot tier must be 1-5.");
-        } else {
-            MineTweakerAPI.apply(new SlagLootRemoveAction(item, tier));
+            return;
         }
+        MineTweakerAPI.apply(new SlagLootRemoveAction(item, tier));
     }
 
     @ZenMethod

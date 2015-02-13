@@ -47,17 +47,25 @@ public class TeaMaker {
     // Adding a new tea maker recipe
     @ZenMethod
     public static void addRecipe(IItemStack output, IItemStack milk_output, IItemStack input, String texture, String milk_texture) {
-        MineTweakerAPI.apply(new Add(new TeaRecipeWrapper(output, milk_output, input, texture, milk_texture)));
+        doAddRecipe(output, milk_output, input, texture, milk_texture);
     }
 
     @ZenMethod
     public static void addRecipe(IItemStack output, IItemStack milk_output, IItemStack input, String texture) {
-        MineTweakerAPI.apply(new Add(new TeaRecipeWrapper(output, milk_output, input, texture, texture)));
+        doAddRecipe(output, milk_output, input, texture, texture);
     }
 
     @ZenMethod
     public static void addRecipe(IItemStack output, IItemStack input, String texture) {
-        MineTweakerAPI.apply(new Add(new TeaRecipeWrapper(output, null, input, texture, texture)));
+        doAddRecipe(output, null, input, texture, texture);
+    }
+
+    private static void doAddRecipe(IItemStack output, IItemStack milk_output, IItemStack input, String texture, String milk_texture) {
+        if ((output == null) || (input == null)) {
+            MineTweakerAPI.getLogger().logError("Tea Maker: Neither input nor output may be null!");
+            return;
+        }
+        MineTweakerAPI.apply(new Add(new TeaRecipeWrapper(output, milk_output, input, texture, milk_texture)));
     }
 
     private static class TeaRecipeWrapper extends AMTRecipeWrapper {

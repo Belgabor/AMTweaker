@@ -24,12 +24,20 @@ public class IceMaker {
     // Adding a new recipe for the ice maker
     @ZenMethod
     public static void addRecipe(IItemStack output, IItemStack input, IItemStack container) {
-        MineTweakerAPI.apply(new Add(new IceMakerRecipeWrapper(output, input, container)));
+        doAddRecipe(output, input, container);
     }
 
     @ZenMethod
     public static void addRecipe(IItemStack output, IItemStack input) {
-        MineTweakerAPI.apply(new Add(new IceMakerRecipeWrapper(output, input, null)));
+        doAddRecipe(output, input, null);
+    }
+
+    private static void doAddRecipe(IItemStack output, IItemStack input, IItemStack container) {
+        if ((output == null) || (input == null)) {
+            MineTweakerAPI.getLogger().logError("Ice Maker: Neither input nor output may be null!");
+            return;
+        }
+        MineTweakerAPI.apply(new Add(new IceMakerRecipeWrapper(output, input, container)));
     }
 
     private static class IceMakerRecipeWrapper extends AMTRecipeWrapper {
@@ -121,6 +129,14 @@ public class IceMaker {
     // Adding a new charge item for the ice maker
     @ZenMethod
     public static void registerChargeItem(IItemStack item, int charge) {
+        if (item == null) {
+            MineTweakerAPI.getLogger().logError("Ice Maker: Charge item must not be null!");
+            return;
+        }
+        if (charge == 0) {
+            MineTweakerAPI.getLogger().logError("Ice Maker: A charge of 0 doesn't make any sense!");
+            return;
+        }
         MineTweakerAPI.apply(new AddCharge(new ChargeItemWrapper(item, charge)));
     }
 

@@ -24,12 +24,33 @@ public class Processor {
     // Adding a new processor recipe
     @ZenMethod
     public static void addRecipe(IItemStack output, IItemStack secondary, IIngredient[] inputs, boolean isFoodRecipe, float secondaryChance) {
-        MineTweakerAPI.apply(new Add(new ProcessorRecipeWrapper(output, secondary, inputs, isFoodRecipe, secondaryChance)));
+        doAddRecipe(output, secondary, inputs, isFoodRecipe, secondaryChance);
     }
 
     @ZenMethod
     public static void addRecipe(IItemStack output, IItemStack secondary, IIngredient[] inputs, boolean isFoodRecipe) {
-        MineTweakerAPI.apply(new Add(new ProcessorRecipeWrapper(output, secondary, inputs, isFoodRecipe, null)));
+        doAddRecipe(output, secondary, inputs, isFoodRecipe, null);
+    }
+
+    @ZenMethod
+    public static void addRecipe(IItemStack output, IIngredient[] inputs, boolean isFoodRecipe) {
+        doAddRecipe(output, null, inputs, isFoodRecipe, null);
+    }
+
+    private static void doAddRecipe(IItemStack output, IItemStack secondary, IIngredient[] inputs, boolean isFoodRecipe, Float secondaryChance) {
+        if (inputs == null) {
+            MineTweakerAPI.getLogger().logError("Processor: Input set must not be null!");
+            return;
+        }
+        if (inputs.length == 0) {
+            MineTweakerAPI.getLogger().logError("Processor: Input set must not empty!");
+            return;
+        }
+        if ((output == null) && (secondary == null)) {
+            MineTweakerAPI.getLogger().logError("Processor: Primary and secondary output must not both be null!");
+            return;
+        }
+        MineTweakerAPI.apply(new Add(new ProcessorRecipeWrapper(output, secondary, inputs, isFoodRecipe, secondaryChance)));
     }
 
     private static class ProcessorRecipeWrapper extends AMTRecipeWrapper {

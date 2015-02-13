@@ -15,7 +15,7 @@ import cpw.mods.fml.common.event.FMLInitializationEvent;
 public class AMTweaker implements IEventHandler<MineTweakerImplementationAPI.ReloadEvent>
 {
     public static final String MODID = "AMTweaker";
-    public static final String VERSION = "0.2";
+    public static final String VERSION = "0.21";
     
     @EventHandler
     public void init(FMLInitializationEvent event)

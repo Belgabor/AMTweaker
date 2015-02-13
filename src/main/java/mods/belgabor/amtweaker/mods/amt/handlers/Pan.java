@@ -51,12 +51,20 @@ public class Pan {
     // Adding a new cooking recipe for the iron plate
     @ZenMethod
     public static void addRecipe(IItemStack output, IItemStack jbowl_output, IItemStack input, String texture, String display) {
-        MineTweakerAPI.apply(new Add(new PanRecipeWrapper(output, jbowl_output, input, texture, display)));
+        doAddRecipe(output, jbowl_output, input, texture, display);
     }
 
     @ZenMethod
     public static void addRecipe(IItemStack output, IItemStack input, String texture, String display) {
-        MineTweakerAPI.apply(new Add(new PanRecipeWrapper(output, null, input, texture, display)));
+        doAddRecipe(output, null, input, texture, display);
+    }
+
+    private static void doAddRecipe(IItemStack output, IItemStack jbowl_output, IItemStack input, String texture, String display) {
+        if ((output == null) || (input == null)) {
+            MineTweakerAPI.getLogger().logError("Clay Pan: Neither input nor output may be null!");
+            return;
+        }
+        MineTweakerAPI.apply(new Add(new PanRecipeWrapper(output, jbowl_output, input, texture, display)));
     }
 
     private static class PanRecipeWrapper extends AMTRecipeWrapper {
@@ -145,11 +153,15 @@ public class Pan {
     // Add a heat source
     @ZenMethod
     public static void registerHeatSource(IItemStack block) {
-        if (isABlock(toStack(block))) {
-            MineTweakerAPI.apply(new PanBlockAddition(block));
-        } else {
-            MineTweakerAPI.getLogger().logError("Heat source for Clay Pan must be a block: " + toStack(block).getDisplayName());
+        if (block == null) {
+            MineTweakerAPI.getLogger().logError("Clay Pan: Heat source block must not be null!");
+            return;
         }
+        if (!isABlock(toStack(block))) {
+            MineTweakerAPI.getLogger().logError("Heat source for Clay Pan must be a block: " + toStack(block).getDisplayName());
+            return;
+        }
+        MineTweakerAPI.apply(new PanBlockAddition(block));
     }
 
     private static class PanBlockAddition extends BlockAddition {

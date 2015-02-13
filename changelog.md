@@ -1,6 +1,14 @@
 Changelog
 =========
 
+
+Version 0.21alpha
+-----------------
+* Add: Some convenience function overloads
+* Add: Lots of input sanity checks as script typos can end in unexpected null values passed to functions
+* Fix: NPE if evaporator had no item output
+
+
 Version 0.2alpha
 ----------------
 * Update to AMT API 2.5 (v2.3c+)
