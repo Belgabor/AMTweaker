@@ -6,6 +6,7 @@ Version 0.21alpha
 -----------------
 * Add: Some convenience function overloads
 * Add: Lots of input sanity checks as script typos can end in unexpected null values passed to functions
+* Add: Configurable bamboo basket
 * Fix: NPE if evaporator had no item output
 
 
