@@ -134,7 +134,7 @@ public class Plate {
         //Loops through the registry, to find the item that matches, saves that recipe then removes it
         @Override
         public void apply() {
-            RecipeRegisterManager.plateRecipe.registerHeatSource(block, meta);
+            RecipeRegisterManager.plateRecipe.registerHeatSource(block, getMeta());
         }
 
     }

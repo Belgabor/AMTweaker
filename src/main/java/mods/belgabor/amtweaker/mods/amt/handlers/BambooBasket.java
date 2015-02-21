@@ -40,9 +40,9 @@ import static mods.belgabor.amtweaker.helpers.InputHelper.toStack;
 @ZenClass("mods.amt.BambooBasket")
 public class BambooBasket {
     @ZenMethod
-    public static void set(IItemStack item) {
+    public static void add(IItemStack item) {
         if (item == null) {
-            MineTweakerAPI.getLogger().logError("Slag loot: Item must not be null!");
+            MineTweakerAPI.getLogger().logError("Bamboo basket: Item must not be null!");
             return;
         }
         MineTweakerAPI.apply(new BambooBasketSetAction(item));
@@ -50,7 +50,6 @@ public class BambooBasket {
 
     private static class BambooBasketSetAction implements IUndoableAction {
         private final ItemStack item;
-        private ItemStack original;
 
         public BambooBasketSetAction(IItemStack item) {
             this.item = toStack(item);
@@ -58,18 +57,17 @@ public class BambooBasket {
 
         @Override
         public void apply() {
-            original = LoadBambooPlugin.bambooBasket;
-            LoadBambooPlugin.bambooBasket = item;
+            if (LoadBambooPlugin.isBasketItem(item) < 0)
+                LoadBambooPlugin.addJapaneseBowlContainer(item);
         }
 
         @Override
         public boolean canUndo() {
-            return true;
+            return false;
         }
 
         @Override
         public void undo() {
-            LoadBambooPlugin.bambooBasket = original;
         }
 
         @Override
@@ -79,7 +77,7 @@ public class BambooBasket {
 
         @Override
         public String describeUndo() {
-            return "Reverting bamboo basket from: " + item.getDisplayName();
+            return null;
         }
 
         @Override

@@ -171,7 +171,7 @@ public class Pan {
 
         @Override
         public void apply() {
-            RecipeRegisterManager.panRecipe.registerHeatSource(block, meta);
+            RecipeRegisterManager.panRecipe.registerHeatSource(block, getMeta());
         }
 
     }

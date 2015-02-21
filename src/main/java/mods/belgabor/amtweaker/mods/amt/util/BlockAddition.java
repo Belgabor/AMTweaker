@@ -6,6 +6,7 @@ import minetweaker.MineTweakerAPI;
 import minetweaker.api.item.IItemStack;
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.oredict.OreDictionary;
 
 import java.util.List;
 
@@ -25,6 +26,14 @@ public abstract class BlockAddition implements IUndoableAction {
         this.block = Block.getBlockFromItem(this.item.getItem());
         this.meta = this.item.getItemDamage();
         this.list = list;
+    }
+
+    protected int getMeta() {
+        if (this.meta == OreDictionary.WILDCARD_VALUE) {
+            return -1;
+        } else {
+            return this.meta;
+        }
     }
 
     @Override

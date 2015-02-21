@@ -72,7 +72,7 @@ public class Slag {
     public static void removeLoot(IItemStack item) {
         MineTweakerAPI.apply(new SlagLootRemoveAllAction(item));
     }
-
+/*
     private static List<ItemStack> getLootList(int tier) {
         switch(tier)
         {
@@ -90,7 +90,7 @@ public class Slag {
                 return null;
         }
     }
-
+*/
 
     private static class SlagLootAddAction implements IUndoableAction {
         private final ItemStack item;
@@ -100,8 +100,8 @@ public class Slag {
         public SlagLootAddAction(IItemStack item, int tier) {
             this.item = toStack(item);
             this.tier = tier;
-            //this.list = RecipeRegisterManager.slagLoot.getLootList(tier);
-            this.list = getLootList(tier);
+            this.list = RecipeRegisterManager.slagLoot.getLootList(tier);
+            //this.list = getLootList(tier);
         }
 
         @Override
@@ -155,8 +155,8 @@ public class Slag {
             this.item = item;
             this.tier = tier;
             this.items = new ArrayList<ItemStack>();
-            //this.list = RecipeRegisterManager.slagLoot.getLootList(tier);
-            this.list = getLootList(tier);
+            this.list = RecipeRegisterManager.slagLoot.getLootList(tier);
+            //this.list = getLootList(tier);
         }
 
         @Override
@@ -245,7 +245,7 @@ public class Slag {
             for (int t=1; t<=5; t++) {
                 if (item.getDamage() == 32767) {
                     // :*
-                    for(ItemStack i: getLootList(t)) {
+                    for(ItemStack i: RecipeRegisterManager.slagLoot.getLootList(t)) {
                         if (i.getItem() == it.getItem()) {
                             items.add(i);
                             tiers.add(t);
@@ -253,7 +253,7 @@ public class Slag {
                         }
                     }
                 } else {
-                    for(ItemStack i: getLootList(t)) {
+                    for(ItemStack i: RecipeRegisterManager.slagLoot.getLootList(t)) {
                         if (areEqual(i, it)) {
                             items.add(i);
                             tiers.add(t);
@@ -266,7 +266,7 @@ public class Slag {
                 MineTweakerAPI.getLogger().logWarning(item.toString() + " is not slag loot");
             } else {
                 for (int i=0; i<items.size(); i++) {
-                    getLootList(tiers.get(i)).remove(items.get(i));
+                    RecipeRegisterManager.slagLoot.getLootList(tiers.get(i)).remove(items.get(i));
                 }
             }
         }
