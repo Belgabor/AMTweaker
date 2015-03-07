@@ -23,21 +23,26 @@ import static mods.belgabor.amtweaker.helpers.StackHelper.areEqualNull;
 public class Processor {
     // Adding a new processor recipe
     @ZenMethod
+    public static void addRecipe(IItemStack output, IItemStack secondary, IIngredient[] inputs, boolean isFoodRecipe, float secondaryChance, boolean forceReturnContainer) {
+        doAddRecipe(output, secondary, inputs, isFoodRecipe, secondaryChance, forceReturnContainer);
+    }
+
+    @ZenMethod
     public static void addRecipe(IItemStack output, IItemStack secondary, IIngredient[] inputs, boolean isFoodRecipe, float secondaryChance) {
-        doAddRecipe(output, secondary, inputs, isFoodRecipe, secondaryChance);
+        doAddRecipe(output, secondary, inputs, isFoodRecipe, secondaryChance, false);
     }
 
     @ZenMethod
     public static void addRecipe(IItemStack output, IItemStack secondary, IIngredient[] inputs, boolean isFoodRecipe) {
-        doAddRecipe(output, secondary, inputs, isFoodRecipe, null);
+        doAddRecipe(output, secondary, inputs, isFoodRecipe, null, false);
     }
 
     @ZenMethod
     public static void addRecipe(IItemStack output, IIngredient[] inputs, boolean isFoodRecipe) {
-        doAddRecipe(output, null, inputs, isFoodRecipe, null);
+        doAddRecipe(output, null, inputs, isFoodRecipe, null, false);
     }
 
-    private static void doAddRecipe(IItemStack output, IItemStack secondary, IIngredient[] inputs, boolean isFoodRecipe, Float secondaryChance) {
+    private static void doAddRecipe(IItemStack output, IItemStack secondary, IIngredient[] inputs, boolean isFoodRecipe, Float secondaryChance, boolean forceReturnContainer) {
         if (inputs == null) {
             MineTweakerAPI.getLogger().logError("Processor: Input set must not be null!");
             return;
@@ -50,7 +55,7 @@ public class Processor {
             MineTweakerAPI.getLogger().logError("Processor: Primary and secondary output must not both be null!");
             return;
         }
-        MineTweakerAPI.apply(new Add(new ProcessorRecipeWrapper(output, secondary, inputs, isFoodRecipe, secondaryChance)));
+        MineTweakerAPI.apply(new Add(new ProcessorRecipeWrapper(output, secondary, inputs, isFoodRecipe, secondaryChance, forceReturnContainer)));
     }
 
     private static class ProcessorRecipeWrapper extends AMTRecipeWrapper {
@@ -59,22 +64,20 @@ public class Processor {
         private Object[] inputs;
         private boolean isFoodRecipe;
         private Float secondaryChance;
+        private boolean forceReturnContainer;
 
-        public ProcessorRecipeWrapper(IItemStack output, IItemStack secondary, IIngredient[] inputs, boolean isFoodRecipe, Float secondaryChance) {
+        public ProcessorRecipeWrapper(IItemStack output, IItemStack secondary, IIngredient[] inputs, boolean isFoodRecipe, Float secondaryChance, boolean forceReturnContainer) {
             this.output = toStack(output);
             this.secondary = toStack(secondary);
             this.inputs = toObjects(inputs, true);
             this.isFoodRecipe = isFoodRecipe;
             this.secondaryChance = secondaryChance;
+            this.forceReturnContainer = forceReturnContainer;
         }
 
         @Override
         public void register() {
-            if (secondaryChance != null) {
-                RecipeRegisterManager.processorRecipe.addRecipe(output, isFoodRecipe, secondary, secondaryChance.floatValue(), inputs);
-            } else {
-                RecipeRegisterManager.processorRecipe.addRecipe(output, isFoodRecipe, secondary, inputs);
-            }
+            RecipeRegisterManager.processorRecipe.addRecipe(output, isFoodRecipe, forceReturnContainer, secondary, (secondaryChance == null)?0:secondaryChance.floatValue(), inputs);
         }
 
         @Override

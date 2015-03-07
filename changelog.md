@@ -1,9 +1,9 @@
 Changelog
 =========
 
-
-Version 0.21alpha
------------------
+Version 0.3alpha
+----------------
+* Update to AMT API additions in 2.4a
 * Add: Some convenience function overloads
 * Add: Lots of input sanity checks as script typos can end in unexpected null values passed to functions
 * Add: Configurable bamboo basket
