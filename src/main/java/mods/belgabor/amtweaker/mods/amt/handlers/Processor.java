@@ -6,9 +6,11 @@ import minetweaker.api.item.IItemStack;
 import mods.belgabor.amtweaker.mods.amt.util.AMTListAddition;
 import mods.belgabor.amtweaker.mods.amt.util.AMTRecipeWrapper;
 import mods.belgabor.amtweaker.util.BaseListRemoval;
+import mods.belgabor.amtweaker.util.BaseListWildcardRemoval;
 import mods.defeatedcrow.api.recipe.IProcessorRecipe;
 import mods.defeatedcrow.api.recipe.RecipeRegisterManager;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.oredict.OreDictionary;
 import stanhebben.zenscript.annotations.ZenClass;
 import stanhebben.zenscript.annotations.ZenMethod;
 
@@ -117,7 +119,7 @@ public class Processor {
     }
 
     //Removes a recipe, apply is never the same for anything, so will always need to override it
-    private static class Remove extends BaseListRemoval {
+    private static class Remove extends BaseListWildcardRemoval {
         public Remove(ItemStack stack) {
             super("Processor", RecipeRegisterManager.processorRecipe.getRecipes(), stack);
         }
@@ -125,17 +127,25 @@ public class Processor {
         //Loops through the registry, to find the item that matches, saves that recipe then removes it
         @Override
         public void apply() {
+            recipes.clear();
             for (IProcessorRecipe r : RecipeRegisterManager.processorRecipe.getRecipes()) {
-                if (r.getOutput() != null && areEqual(r.getOutput(), stack)) {
-                    recipe = r;
-                    break;
+                if (r.getOutput() != null) {
+                    if (stack.getItemDamage() == OreDictionary.WILDCARD_VALUE) {
+                        if (stack.getItem() == r.getOutput().getItem()) {
+                            recipes.add(r);
+                        }
+                    } else if (areEqual(r.getOutput(), stack)) {
+                        recipes.add(r);
+                    }
                 }
             }
 
-            if (recipe == null) {
+            if (recipes.size() == 0) {
                 MineTweakerAPI.getLogger().logWarning("No processor recipe for " + getRecipeInfo() + " found.");
             } else {
-                list.remove(recipe);
+                for(Object o: recipes) {
+                    list.remove(o);
+                }
             }
         }
 

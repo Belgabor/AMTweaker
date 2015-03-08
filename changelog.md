@@ -1,6 +1,11 @@
 Changelog
 =========
 
+Version 0.31alpha
+----------------
+* Processor recipe removal supports meta/damage wildcard now
+
+
 Version 0.3alpha
 ----------------
 * Update to AMT API additions in 2.4a
