@@ -35,7 +35,7 @@ minecraft {
     runDir = "eclipse"
 }
 
-[compileJava, compileTestJava,compileApiJava,recompMinecraft, makeStart].each{
+[compileJava, compileTestJava,compileApiJava,recompMinecraft].each{
     it.options.encoding = 'UTF-8'
     it.options.compilerArgs += ['-source', '1.7', '-target', '1.7', '-Xlint:unchecked']
 }

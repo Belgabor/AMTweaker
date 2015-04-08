@@ -1,9 +1,16 @@
 Changelog
 =========
 
-Version 0.31alpha
+Version 0.4alpha
 ----------------
-* Processor recipe removal supports meta/damage wildcard now
+* Update to AMT API 2.6 (v2.4c+)
+* Add: Chocolate Fondue recipe add/remove
+* Add: choco command (lists chocolate fondue recipes)
+
+
+Version 0.31alpha
+-----------------
+* Add: Processor recipe removal supports meta/damage wildcard now
 
 
 Version 0.3alpha

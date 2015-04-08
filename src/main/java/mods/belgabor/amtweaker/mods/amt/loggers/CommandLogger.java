@@ -34,6 +34,8 @@ import mods.defeatedcrow.api.recipe.IChargeIce;
 import mods.defeatedcrow.api.recipe.RecipeRegisterManager;
 import net.minecraft.item.ItemStack;
 
+import java.util.Map;
+
 /**
  * Created by Belgabor on 10.02.2015.
  */
@@ -42,6 +44,8 @@ public class CommandLogger implements ICommandFunction {
         MineTweakerAPI.server.addMineTweakerCommand("amt", new String[] {
                 "/minetweaker amt charge",
                 "    list charge items",
+                "/minetweaker amt choco",
+                "    list chocolate recipes",
                 "/minetweaker amt heat",
                 "    list clay pan and iron plate heat sources",
                 "/minetweaker amt slag",
@@ -74,6 +78,18 @@ public class CommandLogger implements ICommandFunction {
                 logBoth(player, "Ice Maker:");
                 for (IChargeIce i : RecipeRegisterManager.iceRecipe.getChargeItemList()) {
                     logBoth(player, getItemDeclaration(i.getItem()) + " --- " + i.getItem().getDisplayName() + " (" + i.chargeAmount() + ")");
+                }
+            } else if (arguments[0].equalsIgnoreCase("choco")) {
+                logBoth(player, "Chocolate Recipes:");
+                for (Map.Entry<Object, ItemStack> entry: RecipeRegisterManager.chocoRecipe.getRecipeList().entrySet()) {
+                    String input = "";
+                    if (entry.getKey() instanceof String) {
+                        input = "<ore:" + (String) entry.getKey() + ">";
+                    } else {
+                        input = getItemDeclaration((ItemStack) entry.getKey());
+                    }
+                    player.sendChat(input + " ---> " + getItemDeclaration(entry.getValue()));
+                    MineTweakerAPI.logCommand("mods.amt.Pan.addChocolateRecipe(" + getItemDeclaration(entry.getValue()) + ", " + input + ");");
                 }
             } else if (arguments[0].equalsIgnoreCase("heat")) {
                 logBoth(player, "Pan:");

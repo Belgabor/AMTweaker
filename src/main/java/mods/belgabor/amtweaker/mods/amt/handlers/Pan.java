@@ -28,27 +28,30 @@ package mods.belgabor.amtweaker.mods.amt.handlers;
  * Created by Belgabor on 09.02.2015.
  */
 
+import minetweaker.IUndoableAction;
 import minetweaker.MineTweakerAPI;
+import minetweaker.api.item.IIngredient;
 import minetweaker.api.item.IItemStack;
+import minetweaker.api.minecraft.MineTweakerMC;
 import mods.belgabor.amtweaker.mods.amt.util.AMTListAddition;
 import mods.belgabor.amtweaker.mods.amt.util.AMTRecipeWrapper;
 import mods.belgabor.amtweaker.mods.amt.util.BlockAddition;
 import mods.belgabor.amtweaker.util.BaseListRemoval;
 import mods.defeatedcrow.api.recipe.IPanRecipe;
-import mods.defeatedcrow.api.recipe.IPlateRecipe;
 import mods.defeatedcrow.api.recipe.RecipeRegisterManager;
 import net.minecraft.item.ItemStack;
 import stanhebben.zenscript.annotations.ZenClass;
 import stanhebben.zenscript.annotations.ZenMethod;
 
 import static mods.belgabor.amtweaker.helpers.InputHelper.isABlock;
+import static mods.belgabor.amtweaker.helpers.InputHelper.toObject;
 import static mods.belgabor.amtweaker.helpers.InputHelper.toStack;
 import static mods.belgabor.amtweaker.helpers.StackHelper.areEqual;
 import static mods.belgabor.amtweaker.helpers.StackHelper.areEqualNull;
 
 @ZenClass("mods.amt.Pan")
 public class Pan {
-    // Adding a new cooking recipe for the iron plate
+    // Adding a new cooking recipe for the clay pan
     @ZenMethod
     public static void addRecipe(IItemStack output, IItemStack jbowl_output, IItemStack input, String texture, String display) {
         doAddRecipe(output, jbowl_output, input, texture, display);
@@ -113,7 +116,7 @@ public class Pan {
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    // Removing a Cooking Iron Plate recipe
+    // Removing a clay pan recipe
     @ZenMethod
     public static void removeRecipe(IItemStack output) {
         MineTweakerAPI.apply(new Remove(toStack(output)));
@@ -176,5 +179,179 @@ public class Pan {
 
     }
 
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    private static Object getChocolateKey(Object input) {
+        if (input == null) {
+            return null;
+        }
+
+        for (Object key : RecipeRegisterManager.chocoRecipe.getRecipeList().keySet()) {
+            if ((key instanceof String) && (input instanceof String)) {
+                if ((String) key == (String) input) {
+                    return key;
+                }
+            }
+            else if ((key instanceof ItemStack) && (input instanceof ItemStack)) {
+                if (areEqualNull((ItemStack) key, (ItemStack) input))
+                {
+                    return key;
+                }
+            }
+
+        }
+        return null;
+    }
+
+    // Adding a new cooking recipe for the clay pan
+    @ZenMethod
+    public static void addChocolateRecipe(IItemStack output, IIngredient input) {
+        Object cinput = toObject(input, true);
+        if ((output == null) || (cinput == null)) {
+            MineTweakerAPI.getLogger().logError("Chocolate Recipe: Neither input nor output may be null!");
+            return;
+        }
+        if (RecipeRegisterManager.chocoRecipe.getRecipeList().containsKey(getChocolateKey(cinput))) {
+            MineTweakerAPI.getLogger().logError("Chocolate Recipe: Input item " + input.toString() + " already has a recipe");
+            return;
+        }
+        MineTweakerAPI.apply(new ChocolateAdd(output, cinput));
+    }
+
+    private static class ChocolateAdd implements IUndoableAction {
+        private ItemStack output;
+        private Object input;
+        private Boolean applied;
+
+        public ChocolateAdd(IItemStack output, Object input)  {
+            this.output = toStack(output, true);
+            this.input = input;
+            this.applied = false;
+        }
+
+        @Override
+        public void apply() {
+            if (!applied) {
+                if (input instanceof String) {
+                    RecipeRegisterManager.chocoRecipe.register((String) input, output);
+                } else {
+                    RecipeRegisterManager.chocoRecipe.register((ItemStack) input, output);
+                }
+                applied = true;
+            }
+        }
+
+        @Override
+        public boolean canUndo() {
+            return true;
+        }
+
+        @Override
+        public void undo() {
+            if (applied) {
+                RecipeRegisterManager.chocoRecipe.getRecipeList().remove(input);
+                applied = false;
+            }
+        }
+
+        @Override
+        public String describe() {
+            return "Adding Chocolate Recipe for " + output.getDisplayName();
+        }
+
+        @Override
+        public String describeUndo() {
+            return "Removing Chocolate Recipe for " + output.getDisplayName();
+        }
+
+        @Override
+        public Object getOverrideKey() {
+            return null;
+        }
+    }
+
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    // Removing a clay pan recipe
+    @ZenMethod
+    public static void removeChocolateRecipe(IIngredient input) {
+        Object cinput = toObject(input, true);
+        if (cinput == null) {
+            MineTweakerAPI.getLogger().logError("Chocolate Recipe removal: Input may not be null!");
+            return;
+        }
+        if (!RecipeRegisterManager.chocoRecipe.getRecipeList().containsKey(getChocolateKey(cinput))) {
+            MineTweakerAPI.getLogger().logError("Chocolate Recipe removal: Input item " + input.toString() + " doesn't have a recipe");
+            return;
+        }
+        MineTweakerAPI.apply(new ChocolateRemove(cinput));
+    }
+
+    //Removes a recipe, apply is never the same for anything, so will always need to override it
+    private static class ChocolateRemove implements IUndoableAction {
+        private ItemStack output = null;
+        private Object input;
+        private Boolean applied = false;
+
+        public ChocolateRemove(Object input) {
+            this.input = input;
+        }
+
+        @Override
+        public void apply() {
+            if (!applied) {
+                Object tinput = getChocolateKey(input);
+                output = RecipeRegisterManager.chocoRecipe.getRecipeList().get(tinput);
+                if (output == null) {
+                    MineTweakerAPI.getLogger().logError("Chocolate Recipe removal: Couldn't apply recipe removal (input item unexpectedly has no recipe)");
+                    return;
+                }
+                RecipeRegisterManager.chocoRecipe.getRecipeList().remove(tinput);
+                applied = true;
+            }
+        }
+
+        @Override
+        public boolean canUndo() {
+            return true;
+        }
+
+        @Override
+        public void undo() {
+            if (applied) {
+                if (input instanceof String) {
+                    RecipeRegisterManager.chocoRecipe.register((String) input, output);
+                } else {
+                    RecipeRegisterManager.chocoRecipe.register((ItemStack) input, output);
+                }
+                applied = false;
+            }
+        }
+
+        @Override
+        public String describeUndo() {
+            if (input instanceof String) {
+                return "Restoring Chocolate Recipe for <ore:" + (String) input + ">";
+            } else {
+                return "Restoring Chocolate Recipe for " + ((ItemStack) input).getDisplayName();
+            }
+        }
+
+        @Override
+        public String describe() {
+            if (input instanceof String) {
+                return "Removing Chocolate Recipe for <ore:" + (String) input + ">";
+            } else {
+                return "Removing Chocolate Recipe for " + ((ItemStack) input).getDisplayName();
+            }
+        }
+
+        @Override
+        public Object getOverrideKey() {
+            return null;
+        }
+
+    }
 }
 
