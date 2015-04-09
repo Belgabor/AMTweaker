@@ -5,5 +5,7 @@ A Minecraft mod to support [MineTweaker](http://minetweaker3.powerofbytes.com/) 
 
 Documentation: [Wiki](https://github.com/Belgabor/AMTweaker/wiki)
 
+Also available on [Curse](http://www.curse.com/mc-mods/minecraft/229357-amtweaker)
+
 * Minetweaker (Github): https://github.com/stanhebben/MineTweaker3
 * Apple, Milk & Tea 2: [Wiki](http://defeatedcrow.wiki.fc2.com/wiki/AppleMilkTea%20ver2) [Wiki via Google Translate](https://translate.google.com/translate?sl=ja&tl=en&js=y&prev=_t&hl=de&ie=UTF-8&u=http%3A%2F%2Fdefeatedcrow.wiki.fc2.com%2Fwiki%2FAppleMilkTea%2520ver2&edit-text=&act=url) [Github](https://github.com/defeatedcrow/AppleMilkTea2_1.7.10)
