@@ -1,6 +1,14 @@
 Changelog
 =========
 
+Version 0.5
+-----------
+* Update to AMT v2.6c (required)
+* Add: Barrel brewing recipes
+* Add: recipes command (list all AMT recipes to the log)
+* Fix: Some typos
+
+
 Version 0.4alpha
 ----------------
 * Update to AMT API 2.6 (v2.4c+)

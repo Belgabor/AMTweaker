@@ -14,5 +14,6 @@ public class AMT {
         MineTweakerAPI.registerClass(Battery.class);
         MineTweakerAPI.registerClass(TeaMaker.class);
         MineTweakerAPI.registerClass(BambooBasket.class);
+        MineTweakerAPI.registerClass(Barrel.class);
     }
 }

@@ -124,7 +124,7 @@ public class TeaMaker {
     //Removes a recipe, apply is never the same for anything, so will always need to override it
     private static class Remove extends BaseListRemoval {
         public Remove(ItemStack stack) {
-            super("Tea Makerr", RecipeRegisterManager.teaRecipe.getRecipeList(), stack);
+            super("Tea Maker", RecipeRegisterManager.teaRecipe.getRecipeList(), stack);
         }
 
         //Loops through the registry, to find the item that matches, saves that recipe then removes it
