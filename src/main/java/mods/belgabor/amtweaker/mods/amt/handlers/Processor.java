@@ -26,25 +26,46 @@ public class Processor {
     // Adding a new processor recipe
     @ZenMethod
     public static void addRecipe(IItemStack output, IItemStack secondary, IIngredient[] inputs, boolean isFoodRecipe, float secondaryChance, boolean forceReturnContainer) {
-        doAddRecipe(output, secondary, inputs, isFoodRecipe, secondaryChance, forceReturnContainer);
+        doAddRecipe(output, secondary, inputs, isFoodRecipe, secondaryChance, forceReturnContainer, false, -1);
     }
 
     @ZenMethod
     public static void addRecipe(IItemStack output, IItemStack secondary, IIngredient[] inputs, boolean isFoodRecipe, float secondaryChance) {
-        doAddRecipe(output, secondary, inputs, isFoodRecipe, secondaryChance, false);
+        doAddRecipe(output, secondary, inputs, isFoodRecipe, secondaryChance, false, false, -1);
     }
 
     @ZenMethod
     public static void addRecipe(IItemStack output, IItemStack secondary, IIngredient[] inputs, boolean isFoodRecipe) {
-        doAddRecipe(output, secondary, inputs, isFoodRecipe, null, false);
+        doAddRecipe(output, secondary, inputs, isFoodRecipe, null, false, false, -1);
     }
 
     @ZenMethod
     public static void addRecipe(IItemStack output, IIngredient[] inputs, boolean isFoodRecipe) {
-        doAddRecipe(output, null, inputs, isFoodRecipe, null, false);
+        doAddRecipe(output, null, inputs, isFoodRecipe, null, false, false, -1);
     }
 
-    private static void doAddRecipe(IItemStack output, IItemStack secondary, IIngredient[] inputs, boolean isFoodRecipe, Float secondaryChance, boolean forceReturnContainer) {
+    // Adding a new processor recipe with tier
+    @ZenMethod
+    public static void addRecipeTier(IItemStack output, IItemStack secondary, IIngredient[] inputs, int tier, float secondaryChance, boolean forceReturnContainer) {
+        doAddRecipe(output, secondary, inputs, false, secondaryChance, forceReturnContainer, true, tier);
+    }
+
+    @ZenMethod
+    public static void addRecipeTier(IItemStack output, IItemStack secondary, IIngredient[] inputs, int tier, float secondaryChance) {
+        doAddRecipe(output, secondary, inputs, false, secondaryChance, false, true, tier);
+    }
+
+    @ZenMethod
+    public static void addRecipeTier(IItemStack output, IItemStack secondary, IIngredient[] inputs, int tier) {
+        doAddRecipe(output, secondary, inputs, false, null, false, true, tier);
+    }
+
+    @ZenMethod
+    public static void addRecipeTier(IItemStack output, IIngredient[] inputs, int tier) {
+        doAddRecipe(output, null, inputs, false, null, false, true, tier);
+    }
+
+    private static void doAddRecipe(IItemStack output, IItemStack secondary, IIngredient[] inputs, boolean isFoodRecipe, Float secondaryChance, boolean forceReturnContainer, boolean hasTier, int tier) {
         if (inputs == null) {
             MineTweakerAPI.getLogger().logError("Processor: Input set must not be null!");
             return;
@@ -57,7 +78,7 @@ public class Processor {
             MineTweakerAPI.getLogger().logError("Processor: Primary and secondary output must not both be null!");
             return;
         }
-        MineTweakerAPI.apply(new Add(new ProcessorRecipeWrapper(output, secondary, inputs, isFoodRecipe, secondaryChance, forceReturnContainer)));
+        MineTweakerAPI.apply(new Add(new ProcessorRecipeWrapper(output, secondary, inputs, isFoodRecipe, secondaryChance, forceReturnContainer, hasTier, tier)));
     }
 
     private static class ProcessorRecipeWrapper extends AMTRecipeWrapper {
@@ -67,19 +88,27 @@ public class Processor {
         private boolean isFoodRecipe;
         private Float secondaryChance;
         private boolean forceReturnContainer;
+        private boolean hasTier;
+        private int tier;
 
-        public ProcessorRecipeWrapper(IItemStack output, IItemStack secondary, IIngredient[] inputs, boolean isFoodRecipe, Float secondaryChance, boolean forceReturnContainer) {
+        public ProcessorRecipeWrapper(IItemStack output, IItemStack secondary, IIngredient[] inputs, boolean isFoodRecipe, Float secondaryChance, boolean forceReturnContainer, boolean hasTier, int tier) {
             this.output = toStack(output);
             this.secondary = toStack(secondary);
             this.inputs = toObjects(inputs, true);
             this.isFoodRecipe = isFoodRecipe;
             this.secondaryChance = secondaryChance;
             this.forceReturnContainer = forceReturnContainer;
+            this.hasTier = hasTier;
+            this.tier = tier;
         }
 
         @Override
         public void register() {
-            RecipeRegisterManager.processorRecipe.addRecipe(output, isFoodRecipe, forceReturnContainer, secondary, (secondaryChance == null)?0:secondaryChance.floatValue(), inputs);
+            if (hasTier) {
+                RecipeRegisterManager.processorRecipe.addRecipe(output, isFoodRecipe, tier, forceReturnContainer, secondary, (secondaryChance == null)?0:secondaryChance.floatValue(), inputs);
+            } else {
+                RecipeRegisterManager.processorRecipe.addRecipe(output, isFoodRecipe, forceReturnContainer, secondary, (secondaryChance == null)?0:secondaryChance.floatValue(), inputs);
+            }
         }
 
         @Override
