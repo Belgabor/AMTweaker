@@ -4,6 +4,8 @@ import minetweaker.MineTweakerAPI;
 import mods.belgabor.amtweaker.mods.amt.handlers.*;
 
 public class AMT {
+    public static final String MODID = "DCsAppleMilk";
+
     public AMT() {
         MineTweakerAPI.registerClass(Evaporator.class);
         MineTweakerAPI.registerClass(Plate.class);

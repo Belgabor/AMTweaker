@@ -1,6 +1,14 @@
 Changelog
 =========
 
+Version ?
+---------
+* API updates to AMT v2.9m
+* Add: Processor tier
+* Add: 'soup' command to list soup types for fondue recipes and 'source' command to list fondue sources
+* Add: fondue source recipes
+* Change: Chocolate Fondue to generalized Fondue recipes, 'choco' command changed to 'fondue'
+
 Version 0.5
 -----------
 * Update to AMT v2.6c (required)

@@ -32,11 +32,13 @@ import minetweaker.IUndoableAction;
 import minetweaker.MineTweakerAPI;
 import minetweaker.api.item.IIngredient;
 import minetweaker.api.item.IItemStack;
-import minetweaker.api.minecraft.MineTweakerMC;
 import mods.belgabor.amtweaker.mods.amt.util.AMTListAddition;
 import mods.belgabor.amtweaker.mods.amt.util.AMTRecipeWrapper;
 import mods.belgabor.amtweaker.mods.amt.util.BlockAddition;
 import mods.belgabor.amtweaker.util.BaseListRemoval;
+import mods.defeatedcrow.api.appliance.SoupType;
+import mods.defeatedcrow.api.recipe.IFondueRecipe;
+import mods.defeatedcrow.api.recipe.IFondueSource;
 import mods.defeatedcrow.api.recipe.IPanRecipe;
 import mods.defeatedcrow.api.recipe.RecipeRegisterManager;
 import net.minecraft.item.ItemStack;
@@ -71,11 +73,11 @@ public class Pan {
     }
 
     private static class PanRecipeWrapper extends AMTRecipeWrapper {
-        private ItemStack output;
-        private ItemStack jbowl_output;
-        private ItemStack input;
-        private String texture;
-        private String display;
+        private final ItemStack output;
+        private final ItemStack jbowl_output;
+        private final ItemStack input;
+        private final String texture;
+        private final String display;
 
         public PanRecipeWrapper(IItemStack output, IItemStack jbowl_output, IItemStack input, String texture, String display)  {
             this.output = toStack(output, true);
@@ -169,7 +171,7 @@ public class Pan {
 
     private static class PanBlockAddition extends BlockAddition {
         public PanBlockAddition(IItemStack block) {
-            super("Clay Pan Heat Source", RecipeRegisterManager.panRecipe.getHeatSourceList(), block);
+            super("Clay Pan Heat Source", RecipeRegisterManager.panRecipe.getHeatSourcesList(), block);
         }
 
         @Override
@@ -181,51 +183,63 @@ public class Pan {
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    private static Object getChocolateKey(Object input) {
-        if (input == null) {
-            return null;
-        }
-
-        for (Object key : RecipeRegisterManager.chocoRecipe.getRecipeList().keySet()) {
-            if ((key instanceof String) && (input instanceof String)) {
-                if ((String) key == (String) input) {
-                    return key;
+    private static IFondueRecipe findRecipe(Object input, int type) {
+        for(IFondueRecipe recipe : RecipeRegisterManager.fondueRecipe.getRecipeList()) {
+            boolean inputMatch = false;
+            if ((recipe.getInput() instanceof String) && (input instanceof String)) {
+                if (recipe.getInput().equals(input)) {
+                    inputMatch = true;
                 }
             }
-            else if ((key instanceof ItemStack) && (input instanceof ItemStack)) {
-                if (areEqualNull((ItemStack) key, (ItemStack) input))
+            else if ((recipe.getInput() instanceof ItemStack) && (input instanceof ItemStack)) {
+                if (areEqualNull((ItemStack) recipe.getInput(), (ItemStack) input))
                 {
-                    return key;
+                    inputMatch = true;
                 }
             }
-
+            if (inputMatch && (recipe.getType().id == type)) {
+                return recipe;
+            }
         }
+
         return null;
     }
 
     // Adding a new cooking recipe for the clay pan
+
     @ZenMethod
-    public static void addChocolateRecipe(IItemStack output, IIngredient input) {
+    public static void addFondueRecipe(IItemStack output, IIngredient input, int type) {
         Object cinput = toObject(input, true);
         if ((output == null) || (cinput == null)) {
-            MineTweakerAPI.getLogger().logError("Chocolate Recipe: Neither input nor output may be null!");
+            MineTweakerAPI.getLogger().logError("Fondue Recipe: Neither input nor output may be null!");
             return;
         }
-        if (RecipeRegisterManager.chocoRecipe.getRecipeList().containsKey(getChocolateKey(cinput))) {
-            MineTweakerAPI.getLogger().logError("Chocolate Recipe: Input item " + input.toString() + " already has a recipe");
+        if ((type < 0) || (type >= SoupType.types.length)) {
+            MineTweakerAPI.getLogger().logError(String.format("Fondue Recipe: Unknown soup type %d for input item %s", type, input.toString()));
             return;
         }
-        MineTweakerAPI.apply(new ChocolateAdd(output, cinput));
+        if (findRecipe(cinput, type) != null) {
+            MineTweakerAPI.getLogger().logError(String.format("Fondue Recipe: Input item %s already has a recipe for soup type %d (%s)", input.toString(), type, SoupType.getType(type).display));
+            return;
+        }
+        MineTweakerAPI.apply(new ChocolateAdd(output, cinput, type));
+    }
+
+    @ZenMethod
+    public static void addChocolateRecipe(IItemStack output, IIngredient input) {
+        addFondueRecipe(output, input, SoupType.CHOCO.id);
     }
 
     private static class ChocolateAdd implements IUndoableAction {
-        private ItemStack output;
-        private Object input;
+        private final ItemStack output;
+        private final Object input;
         private Boolean applied;
+        private final Integer type;
 
-        public ChocolateAdd(IItemStack output, Object input)  {
+        public ChocolateAdd(IItemStack output, Object input, int type)  {
             this.output = toStack(output, true);
             this.input = input;
+            this.type = type;
             this.applied = false;
         }
 
@@ -233,9 +247,9 @@ public class Pan {
         public void apply() {
             if (!applied) {
                 if (input instanceof String) {
-                    RecipeRegisterManager.chocoRecipe.register((String) input, output);
+                    RecipeRegisterManager.fondueRecipe.registerByOre((String) input, output, SoupType.getType(type));
                 } else {
-                    RecipeRegisterManager.chocoRecipe.register((ItemStack) input, output);
+                    RecipeRegisterManager.fondueRecipe.register((ItemStack) input, output, SoupType.getType(type));
                 }
                 applied = true;
             }
@@ -249,14 +263,14 @@ public class Pan {
         @Override
         public void undo() {
             if (applied) {
-                RecipeRegisterManager.chocoRecipe.getRecipeList().remove(input);
+                RecipeRegisterManager.fondueRecipe.getRecipeList().remove(findRecipe(input, type));
                 applied = false;
             }
         }
 
         @Override
         public String describe() {
-            return "Adding Chocolate Recipe for " + output.getDisplayName();
+            return "Adding Fondue Recipe for " + output.getDisplayName();
         }
 
         @Override
@@ -275,39 +289,50 @@ public class Pan {
 
     // Removing a clay pan recipe
     @ZenMethod
-    public static void removeChocolateRecipe(IIngredient input) {
+    public static void removeFondueRecipe(IIngredient input, int type) {
         Object cinput = toObject(input, true);
         if (cinput == null) {
-            MineTweakerAPI.getLogger().logError("Chocolate Recipe removal: Input may not be null!");
+            MineTweakerAPI.getLogger().logError("Fondue Recipe removal: Input may not be null!");
             return;
         }
-        if (!RecipeRegisterManager.chocoRecipe.getRecipeList().containsKey(getChocolateKey(cinput))) {
-            MineTweakerAPI.getLogger().logError("Chocolate Recipe removal: Input item " + input.toString() + " doesn't have a recipe");
+        if ((type < 0) || (type >= SoupType.types.length)) {
+            MineTweakerAPI.getLogger().logError(String.format("Fondue Recipe removal: Unknown soup type %d for input item %s", type, input.toString()));
             return;
         }
-        MineTweakerAPI.apply(new ChocolateRemove(cinput));
+        if (findRecipe(cinput, type) == null) {
+            MineTweakerAPI.getLogger().logError(String.format("Fondue Recipe removal: Input item %s has no recipe for soup type %d (%s)", input.toString(), type, SoupType.getType(type).display));
+            return;
+        }
+        MineTweakerAPI.apply(new ChocolateRemove(cinput, type));
+    }
+
+    @ZenMethod
+    public static void removeChocolateRecipe(IIngredient input) {
+        removeFondueRecipe(input, SoupType.CHOCO.id);
     }
 
     //Removes a recipe, apply is never the same for anything, so will always need to override it
     private static class ChocolateRemove implements IUndoableAction {
         private ItemStack output = null;
-        private Object input;
+        private final Object input;
+        private final Integer type;
         private Boolean applied = false;
 
-        public ChocolateRemove(Object input) {
+        public ChocolateRemove(Object input, int type) {
             this.input = input;
+            this.type = type;
         }
 
         @Override
         public void apply() {
             if (!applied) {
-                Object tinput = getChocolateKey(input);
-                output = RecipeRegisterManager.chocoRecipe.getRecipeList().get(tinput);
-                if (output == null) {
-                    MineTweakerAPI.getLogger().logError("Chocolate Recipe removal: Couldn't apply recipe removal (input item unexpectedly has no recipe)");
+                IFondueRecipe recipe = findRecipe(input, type);
+                if (recipe == null) {
+                    MineTweakerAPI.getLogger().logError("Fondue Recipe removal: Couldn't apply recipe removal (input item unexpectedly has no recipe)");
                     return;
                 }
-                RecipeRegisterManager.chocoRecipe.getRecipeList().remove(tinput);
+                output = recipe.getOutput();
+                RecipeRegisterManager.fondueRecipe.getRecipeList().remove(recipe);
                 applied = true;
             }
         }
@@ -321,9 +346,9 @@ public class Pan {
         public void undo() {
             if (applied) {
                 if (input instanceof String) {
-                    RecipeRegisterManager.chocoRecipe.register((String) input, output);
+                    RecipeRegisterManager.fondueRecipe.registerByOre((String) input, output, SoupType.getType(type));
                 } else {
-                    RecipeRegisterManager.chocoRecipe.register((ItemStack) input, output);
+                    RecipeRegisterManager.fondueRecipe.register((ItemStack) input, output, SoupType.getType(type));
                 }
                 applied = false;
             }
@@ -331,20 +356,24 @@ public class Pan {
 
         @Override
         public String describeUndo() {
+            String x;
             if (input instanceof String) {
-                return "Restoring Chocolate Recipe for <ore:" + (String) input + ">";
+                x = "<ore:" + input + ">";
             } else {
-                return "Restoring Chocolate Recipe for " + ((ItemStack) input).getDisplayName();
+                x = ((ItemStack) input).getDisplayName();
             }
+            return String.format("Restoring Fondue Recipe for %s in soup type %d (%s)", x, type, SoupType.getType(type).display);
         }
 
         @Override
         public String describe() {
+            String x;
             if (input instanceof String) {
-                return "Removing Chocolate Recipe for <ore:" + (String) input + ">";
+                x = "<ore:" + input + ">";
             } else {
-                return "Removing Chocolate Recipe for " + ((ItemStack) input).getDisplayName();
+                x = ((ItemStack) input).getDisplayName();
             }
+            return String.format("Removing Fondue Recipe for %s in soup type %d (%s)", x, type, SoupType.getType(type).display);
         }
 
         @Override
@@ -353,5 +382,193 @@ public class Pan {
         }
 
     }
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    private static IFondueSource findSource(Object input, int beforeType) {
+        for(IFondueSource recipe : RecipeRegisterManager.fondueRecipe.getSourceList()) {
+            boolean inputMatch = false;
+            if ((recipe.getInput() instanceof String) && (input instanceof String)) {
+                if (recipe.getInput().equals(input)) {
+                    inputMatch = true;
+                }
+            }
+            else if ((recipe.getInput() instanceof ItemStack) && (input instanceof ItemStack)) {
+                if (areEqualNull((ItemStack) recipe.getInput(), (ItemStack) input))
+                {
+                    inputMatch = true;
+                }
+            }
+            if (inputMatch && (recipe.beforeType().id == beforeType)) {
+                return recipe;
+            }
+        }
+
+        return null;
+    }
+
+    // Adding a new fondue source recipe
+
+    @ZenMethod
+    public static void addFondueSource(IIngredient input, int beforeType, int afterType) {
+        Object cinput = toObject(input, true);
+        if (cinput == null) {
+            MineTweakerAPI.getLogger().logError("Fondue Source: Input may not be null!");
+            return;
+        }
+        if ((beforeType < 0) || (beforeType >= SoupType.types.length)) {
+            MineTweakerAPI.getLogger().logError(String.format("Fondue Source: Unknown soup type %d for input item %s", beforeType, input.toString()));
+            return;
+        }
+        if ((afterType < 0) || (afterType >= SoupType.types.length)) {
+            MineTweakerAPI.getLogger().logError(String.format("Fondue Source: Unknown soup type %d for input item %s", afterType, input.toString()));
+            return;
+        }
+        if (findSource(cinput, beforeType) != null) {
+            MineTweakerAPI.getLogger().logError(String.format("Fondue Source: Input item %s already has a recipe for soup type %d (%s)", input.toString(), beforeType, SoupType.getType(beforeType).display));
+            return;
+        }
+        MineTweakerAPI.apply(new SourceAdd(cinput, beforeType, afterType));
+    }
+
+    private static class SourceAdd implements IUndoableAction {
+        private final Object input;
+        private Boolean applied;
+        private final Integer beforeType;
+        private final Integer afterType;
+
+        public SourceAdd(Object input, int beforeType, int afterType)  {
+            this.input = input;
+            this.beforeType = beforeType;
+            this.afterType = afterType;
+            this.applied = false;
+        }
+
+        @Override
+        public void apply() {
+            if (!applied) {
+                RecipeRegisterManager.fondueRecipe.registerSource(input, SoupType.getType(beforeType), SoupType.getType(afterType));
+                applied = true;
+            }
+        }
+
+        @Override
+        public boolean canUndo() {
+            return true;
+        }
+
+        @Override
+        public void undo() {
+            if (applied) {
+                RecipeRegisterManager.fondueRecipe.getSourceList().remove(findSource(input, beforeType));
+                applied = false;
+            }
+        }
+
+        @Override
+        public String describe() {
+            return "Adding Fondue Source for " + SoupType.getType(afterType).display;
+        }
+
+        @Override
+        public String describeUndo() {
+            return "Removing Chocolate Recipe for " + SoupType.getType(afterType).display;
+        }
+
+        @Override
+        public Object getOverrideKey() {
+            return null;
+        }
+    }
+
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    // Removing a fondue source recipe
+    @ZenMethod
+    public static void removeFondueSource(IIngredient input, int beforeType) {
+        Object cinput = toObject(input, true);
+        if (cinput == null) {
+            MineTweakerAPI.getLogger().logError("Fondue Source removal: Input may not be null!");
+            return;
+        }
+        if ((beforeType < 0) || (beforeType >= SoupType.types.length)) {
+            MineTweakerAPI.getLogger().logError(String.format("Fondue Source removal: Unknown soup type %d for input item %s", beforeType, input.toString()));
+            return;
+        }
+        if (findSource(cinput, beforeType) == null) {
+            MineTweakerAPI.getLogger().logError(String.format("Fondue Source removal: Input item %s has no recipe for soup type %d (%s)", input.toString(), beforeType, SoupType.getType(beforeType).display));
+            return;
+        }
+        MineTweakerAPI.apply(new SourceRemove(cinput, beforeType));
+    }
+
+    //Removes a recipe, apply is never the same for anything, so will always need to override it
+    private static class SourceRemove implements IUndoableAction {
+        private final Object input;
+        private final Integer beforeType;
+        private Integer afterType;
+        private Boolean applied = false;
+
+        public SourceRemove(Object input, int beforeType) {
+            this.input = input;
+            this.beforeType = beforeType;
+        }
+
+        @Override
+        public void apply() {
+            if (!applied) {
+                IFondueSource recipe = findSource(input, beforeType);
+                if (recipe == null) {
+                    MineTweakerAPI.getLogger().logError("Fondue Source removal: Couldn't apply recipe removal (input item unexpectedly has no recipe)");
+                    return;
+                }
+                afterType = recipe.afterType().id;
+                RecipeRegisterManager.fondueRecipe.getSourceList().remove(recipe);
+                applied = true;
+            }
+        }
+
+        @Override
+        public boolean canUndo() {
+            return true;
+        }
+
+        @Override
+        public void undo() {
+            if (applied) {
+                RecipeRegisterManager.fondueRecipe.registerSource(input, SoupType.getType(beforeType), SoupType.getType(afterType));
+                applied = false;
+            }
+        }
+
+        @Override
+        public String describeUndo() {
+            String x;
+            if (input instanceof String) {
+                x = "<ore:" + input + ">";
+            } else {
+                x = ((ItemStack) input).getDisplayName();
+            }
+            return String.format("Restoring Fondue Source for %s in soup type %d (%s)", x, beforeType, SoupType.getType(beforeType).display);
+        }
+
+        @Override
+        public String describe() {
+            String x;
+            if (input instanceof String) {
+                x = "<ore:" + input + ">";
+            } else {
+                x = ((ItemStack) input).getDisplayName();
+            }
+            return String.format("Removing Fondue Source for %s in soup type %d (%s)", x, beforeType, SoupType.getType(beforeType).display);
+        }
+
+        @Override
+        public Object getOverrideKey() {
+            return null;
+        }
+
+    }
+
 }
 

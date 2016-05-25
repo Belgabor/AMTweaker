@@ -39,7 +39,7 @@ public abstract class BaseListWildcardRemoval implements IUndoableAction {
     protected final List list;
     protected final FluidStack fluid;
     protected final ItemStack stack;
-    protected ArrayList<Object> recipes;
+    protected final ArrayList<Object> recipes;
 
     public BaseListWildcardRemoval(String description, List list, ItemStack stack, FluidStack fluid) {
         this.list = list;

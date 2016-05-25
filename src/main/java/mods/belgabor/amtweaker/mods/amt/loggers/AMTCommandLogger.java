@@ -25,10 +25,10 @@
 package mods.belgabor.amtweaker.mods.amt.loggers;
 
 import minetweaker.MineTweakerAPI;
-import minetweaker.api.item.IItemStack;
 import minetweaker.api.minecraft.MineTweakerMC;
 import minetweaker.api.player.IPlayer;
 import minetweaker.api.server.ICommandFunction;
+import mods.defeatedcrow.api.appliance.SoupType;
 import mods.defeatedcrow.api.charge.ChargeItemManager;
 import mods.defeatedcrow.api.charge.IChargeItem;
 import mods.defeatedcrow.api.recipe.*;
@@ -44,20 +44,24 @@ import java.util.Map;
 /**
  * Created by Belgabor on 10.02.2015.
  */
-public class CommandLogger implements ICommandFunction {
+public class AMTCommandLogger implements ICommandFunction {
     public static void register() {
         MineTweakerAPI.server.addMineTweakerCommand("amt", new String[] {
                 "/minetweaker amt charge",
                 "    list charge items",
-                "/minetweaker amt choco",
-                "    list chocolate recipes",
+                "/minetweaker amt fondue",
+                "    list fondue recipes",
+                "/minetweaker amt soup",
+                "    list fondue soup types",
+                "/minetweaker amt source",
+                "    list fondue sources (for reference)",
                 "/minetweaker amt heat",
                 "    list clay pan and iron plate heat sources",
                 "/minetweaker amt recipes",
                 "    list all AMT specific recipes to the minetweaker log",
                 "/minetweaker amt slag",
                 "    list slag loot"
-        }, new CommandLogger());
+        }, new AMTCommandLogger());
     }
 
     private void logBoth(IPlayer player, String s) {
@@ -70,16 +74,16 @@ public class CommandLogger implements ICommandFunction {
         for (Map.Entry<Fluid, Fluid> entry: BrewingRecipe.instance.recipeMap().entrySet()) {
             if (player != null)
                 player.sendChat(getItemDeclaration(entry.getKey()) + " ---> " + getItemDeclaration(entry.getValue()));
-            MineTweakerAPI.logCommand("mods.amt.Pan.addChocolateRecipe(" + getItemDeclaration(entry.getValue()) + ", " + getItemDeclaration(entry.getKey()) + ");");
+            MineTweakerAPI.logCommand("mods.amt.Barrel.addRecipe(" + getItemDeclaration(entry.getValue()) + ", " + getItemDeclaration(entry.getKey()) + ");");
         }
     }
 
-    private void logChocolateRecipes(IPlayer player) {
-        for (Map.Entry<Object, ItemStack> entry: RecipeRegisterManager.chocoRecipe.getRecipeList().entrySet()) {
-            String input = getObjectDeclaration(entry.getKey());
+    private void logFondueRecipes(IPlayer player) {
+        for (IFondueRecipe entry: RecipeRegisterManager.fondueRecipe.getRecipeList()) {
+            String input = getObjectDeclaration(entry.getInput());
             if (player != null)
-                player.sendChat(input + " ---> " + getItemDeclaration(entry.getValue()));
-            MineTweakerAPI.logCommand("mods.amt.Pan.addChocolateRecipe(" + getItemDeclaration(entry.getValue()) + ", " + input + ");");
+                player.sendChat(String.format("%s ---(%d, %s)---> %s", input, entry.getType().id, entry.getType().display, getItemDeclaration(entry.getOutput())));
+            MineTweakerAPI.logCommand(String.format("mods.amt.Pan.addFondueRecipe(%s, %s, %d);", getItemDeclaration(entry.getOutput()), input, entry.getType().id));
         }
     }
 
@@ -178,7 +182,7 @@ public class CommandLogger implements ICommandFunction {
                 o += ", " + getItemDeclaration(milk);
             }
             o += ", " + getItemDeclaration(recipe.getInput()) + ", \"" + recipe.getTex() + "\"";
-            if ((milk != null) && (recipe.getTex() != recipe.getMilkTex())) {
+            if ((milk != null) && (!recipe.getTex().equals(recipe.getMilkTex()))) {
                 o += ", \"" + recipe.getMilkTex() + "\"";
             }
             MineTweakerAPI.logCommand(o + ");");
@@ -199,7 +203,7 @@ public class CommandLogger implements ICommandFunction {
     }
     private String getObjectDeclaration(Object stack) {
         if (stack instanceof String) {
-            return "<ore:" + (String) stack + ">";
+            return "<ore:" + stack + ">";
         } else if (stack instanceof ItemStack) {
             return getItemDeclaration((ItemStack) stack);
         } else if (stack instanceof Item) {
@@ -234,35 +238,33 @@ public class CommandLogger implements ICommandFunction {
                 for (IChargeIce i : RecipeRegisterManager.iceRecipe.getChargeItemList()) {
                     logBoth(player, getItemDeclaration(i.getItem()) + " --- " + i.getItem().getDisplayName() + " (" + i.chargeAmount() + ")");
                 }
-            } else if (arguments[0].equalsIgnoreCase("choco")) {
-                logBoth(player, "Chocolate Recipes:");
-                logChocolateRecipes(player);
-                /*
-                for (Map.Entry<Object, ItemStack> entry: RecipeRegisterManager.chocoRecipe.getRecipeList().entrySet()) {
-                    String input = "";
-                    if (entry.getKey() instanceof String) {
-                        input = "<ore:" + (String) entry.getKey() + ">";
-                    } else {
-                        input = getItemDeclaration((ItemStack) entry.getKey());
-                    }
-                    player.sendChat(input + " ---> " + getItemDeclaration(entry.getValue()));
-                    MineTweakerAPI.logCommand("mods.amt.Pan.addChocolateRecipe(" + getItemDeclaration(entry.getValue()) + ", " + input + ");");
+            } else if (arguments[0].equalsIgnoreCase("fondue")) {
+                logBoth(player, "Fondue Recipes:");
+                logFondueRecipes(player);
+            } else if (arguments[0].equalsIgnoreCase("soup")) {
+                logBoth(player, "Fondue Soup Types:");
+                for (SoupType s: SoupType.types) {
+                    logBoth(player, String.format("%d: %s", s.id, s.display));
                 }
-                */
+            } else if (arguments[0].equalsIgnoreCase("source")) {
+                logBoth(player, "Fondue Sources:");
+                for (IFondueSource s: RecipeRegisterManager.fondueRecipe.getSourceList()) {
+                    logBoth(player, String.format("%s (%d) --- %s ---> %s (%d)", s.beforeType().display, s.beforeType().id, getObjectDeclaration(s.getInput()), s.afterType().display, s.afterType().id));
+                }
             } else if (arguments[0].equalsIgnoreCase("heat")) {
                 logBoth(player, "Pan:");
-                for (ItemStack i: RecipeRegisterManager.panRecipe.getHeatSourceList()) {
-                    logBoth(player, getItemDeclaration(i) + " -- " + i.getDisplayName());
+                for (ICookingHeatSource i: RecipeRegisterManager.panRecipe.getHeatSourcesList()) {
+                    logBoth(player, getItemDeclaration(new ItemStack(i.getBlock(), 1, i.getMetadata())) + " -- " + i.getBlock().getLocalizedName());
                 }
                 logBoth(player, "Plate:");
-                for (ItemStack i: RecipeRegisterManager.plateRecipe.getHeatSourceList()) {
-                    logBoth(player, getItemDeclaration(i) + " -- " + i.getDisplayName());
+                for (ICookingHeatSource i: RecipeRegisterManager.plateRecipe.getHeatSourcesList()) {
+                    logBoth(player, getItemDeclaration(new ItemStack(i.getBlock(), 1, i.getMetadata())) + " -- " + i.getBlock().getLocalizedName());
                 }
             } else if (arguments[0].equalsIgnoreCase("recipes")) {
                 MineTweakerAPI.logCommand("Barrel brewing recipes:");
                 logBarrelRecipes(null);
-                MineTweakerAPI.logCommand("Chocolate fondue recipes:");
-                logChocolateRecipes(null);
+                MineTweakerAPI.logCommand("Fondue recipes:");
+                logFondueRecipes(null);
                 MineTweakerAPI.logCommand("Evaporator recipes:");
                 logEvaporatorRecipes();
                 MineTweakerAPI.logCommand("Ice Maker recipes:");

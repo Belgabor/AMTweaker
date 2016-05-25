@@ -56,8 +56,8 @@ public class Barrel {
     }
 
     private static class BarrelAdd implements IUndoableAction {
-        private Fluid output;
-        private Fluid input;
+        private final Fluid output;
+        private final Fluid input;
         private Boolean applied;
 
         public BarrelAdd(Fluid output, Fluid input)  {
@@ -124,7 +124,7 @@ public class Barrel {
     //Removes a recipe, apply is never the same for anything, so will always need to override it
     private static class BarrelRemove implements IUndoableAction {
         private Fluid output = null;
-        private Fluid input;
+        private final Fluid input;
         private Boolean applied = false;
 
         public BarrelRemove(Fluid input) {

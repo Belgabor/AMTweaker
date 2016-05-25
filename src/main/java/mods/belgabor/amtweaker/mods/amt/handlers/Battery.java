@@ -66,13 +66,13 @@ public class Battery {
     }
 
     private static class ChargeItemWrapper extends AMTRecipeWrapper {
-        private ItemStack item;
-        private ItemStack discharged;
-        private int charge;
+        private final ItemStack item;
+        private final ItemStack discharged;
+        private final int charge;
 
         public ChargeItemWrapper(IItemStack item, IItemStack discharged, int charge) {
             this.item = toStack(item, true);
-            this.discharged = toStack(item);
+            this.discharged = toStack(discharged);
             this.charge = charge;
         }
 

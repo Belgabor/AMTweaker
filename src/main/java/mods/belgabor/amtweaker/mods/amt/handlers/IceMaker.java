@@ -41,9 +41,9 @@ public class IceMaker {
     }
 
     private static class IceMakerRecipeWrapper extends AMTRecipeWrapper {
-        private ItemStack output;
-        private ItemStack input;
-        private ItemStack container;
+        private final ItemStack output;
+        private final ItemStack input;
+        private final ItemStack container;
 
         public IceMakerRecipeWrapper(IItemStack output, IItemStack input, IItemStack container) {
             this.output = toStack(output);
@@ -141,8 +141,8 @@ public class IceMaker {
     }
 
     private static class ChargeItemWrapper extends AMTRecipeWrapper {
-        private ItemStack item;
-        private int charge;
+        private final ItemStack item;
+        private final int charge;
 
         public ChargeItemWrapper(IItemStack item, int charge) {
             this.item = toStack(item, true);

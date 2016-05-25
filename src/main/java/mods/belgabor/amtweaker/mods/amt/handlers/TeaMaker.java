@@ -69,11 +69,11 @@ public class TeaMaker {
     }
 
     private static class TeaRecipeWrapper extends AMTRecipeWrapper {
-        private ItemStack output;
-        private ItemStack milk_output;
-        private ItemStack input;
-        private String texture;
-        private String milk_texture;
+        private final ItemStack output;
+        private final ItemStack milk_output;
+        private final ItemStack input;
+        private final String texture;
+        private final String milk_texture;
 
         public TeaRecipeWrapper(IItemStack output, IItemStack milk_output, IItemStack input, String texture, String milk_texture) {
             this.output = toStack(output, true);
@@ -93,8 +93,8 @@ public class TeaMaker {
             ITeaRecipe r = (ITeaRecipe) o;
             return (areEqualNull(r.getOutput(), output)) &&
                     (areEqualNull(r.getOutputMilk(), milk_output)) &&
-                    (r.getTex() == texture) &&
-                    (r.getMilkTex() == milk_texture) &&
+                    (r.getTex().equals(texture)) &&
+                    (r.getMilkTex().equals(milk_texture)) &&
                     (areEqualNull(r.getInput(), input));
         }
 

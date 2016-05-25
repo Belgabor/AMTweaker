@@ -64,10 +64,10 @@ public class Evaporator {
     }
 
     private static class EvaporatorRecipeWrapper extends AMTRecipeWrapper {
-        private ItemStack output;
-        private FluidStack secondary;
-        private ItemStack input;
-        private boolean returnContainer;
+        private final ItemStack output;
+        private final FluidStack secondary;
+        private final ItemStack input;
+        private final boolean returnContainer;
 
         public EvaporatorRecipeWrapper(IItemStack output, ILiquidStack secondary, IItemStack input, boolean returnContainer) {
             this.output = toStack(output);

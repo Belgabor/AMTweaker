@@ -30,9 +30,10 @@ version = "${config.minecraft_version}-${config.mod_version}"
 group= "com.github.belgabor.amtweaker" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "AMTweaker"
 
+
 minecraft {
     version = config.minecraft_version + "-" + config.forge_version
-    runDir = "eclipse"
+    runDir = "run"
 }
 
 [compileJava, compileTestJava,compileApiJava,recompMinecraft].each{

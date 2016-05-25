@@ -31,10 +31,10 @@ public class Plate {
     }
 
     private static class PlateRecipeWrapper extends AMTRecipeWrapper {
-        private ItemStack output;
-        private ItemStack input;
-        private int cookingTime;
-        private boolean isOvenRecipe;
+        private final ItemStack output;
+        private final ItemStack input;
+        private final int cookingTime;
+        private final boolean isOvenRecipe;
 
         public PlateRecipeWrapper(IItemStack output, IItemStack input, int cookingTime, boolean isOvenRecipe)  {
             this.output = toStack(output, true);
@@ -128,7 +128,7 @@ public class Plate {
     //Removes a recipe, apply is never the same for anything, so will always need to override it
     private static class PlateBlockAddition extends BlockAddition {
         public PlateBlockAddition(IItemStack block) {
-            super("Cooking Iron Plate Heat Source", RecipeRegisterManager.plateRecipe.getHeatSourceList(), block);
+            super("Cooking Iron Plate Heat Source", RecipeRegisterManager.plateRecipe.getHeatSourcesList(), block);
         }
 
         //Loops through the registry, to find the item that matches, saves that recipe then removes it

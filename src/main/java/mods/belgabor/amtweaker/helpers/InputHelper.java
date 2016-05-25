@@ -141,7 +141,7 @@ public class InputHelper {
     }
 
     public static String toString(IOreDictEntry entry) {
-        return ((IOreDictEntry) entry).getName();
+        return entry.getName();
     }
 
     public static FluidStack toFluid(ILiquidStack iStack) {

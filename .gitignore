@@ -5,3 +5,5 @@
 /AMTweaker.iml
 /AMTweaker.ipr
 /.gradle
+/.idea
+/run
