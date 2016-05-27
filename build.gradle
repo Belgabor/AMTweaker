@@ -26,6 +26,9 @@ configFile.withReader {
     project.ext.config = new ConfigSlurper().parse prop
 }
 
+sourceCompatibility = JavaVersion.VERSION_1_7
+targetCompatibility = JavaVersion.VERSION_1_7
+
 version = "${config.minecraft_version}-${config.mod_version}"
 group= "com.github.belgabor.amtweaker" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "AMTweaker"

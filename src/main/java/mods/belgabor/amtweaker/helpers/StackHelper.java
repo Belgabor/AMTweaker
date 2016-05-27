@@ -44,4 +44,23 @@ public class StackHelper {
     public static boolean areEqualNull(FluidStack stack, FluidStack stack2) {
         return (stack == null ? stack2 == null : stack.isFluidEqual(stack2));
     }
+
+    public static boolean areEqualNull(Object stack, Object stack2) {
+        if ((stack instanceof String) && (stack2 instanceof String)) {
+            return stack.equals(stack2);
+        }
+        if ((stack instanceof ItemStack) && (stack2 instanceof ItemStack)) {
+            return areEqual((ItemStack) stack, (ItemStack) stack2);
+        }
+        return stack == stack2;
+    }
+
+    public static String varToString(Object input) {
+        if (input instanceof String) {
+            return "<ore:" + input + ">";
+        } else if (input instanceof ItemStack) {
+            return ((ItemStack) input).getDisplayName();
+        }
+        return "UNKNOWN";
+    }
 }

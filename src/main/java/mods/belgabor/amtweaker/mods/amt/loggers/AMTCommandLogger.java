@@ -28,6 +28,7 @@ import minetweaker.MineTweakerAPI;
 import minetweaker.api.minecraft.MineTweakerMC;
 import minetweaker.api.player.IPlayer;
 import minetweaker.api.server.ICommandFunction;
+import mods.belgabor.amtweaker.util.CommandLoggerBase;
 import mods.defeatedcrow.api.appliance.SoupType;
 import mods.defeatedcrow.api.charge.ChargeItemManager;
 import mods.defeatedcrow.api.charge.IChargeItem;
@@ -44,7 +45,7 @@ import java.util.Map;
 /**
  * Created by Belgabor on 10.02.2015.
  */
-public class AMTCommandLogger implements ICommandFunction {
+public class AMTCommandLogger extends CommandLoggerBase implements ICommandFunction {
     public static void register() {
         MineTweakerAPI.server.addMineTweakerCommand("amt", new String[] {
                 "/minetweaker amt charge",
@@ -62,12 +63,6 @@ public class AMTCommandLogger implements ICommandFunction {
                 "/minetweaker amt slag",
                 "    list slag loot"
         }, new AMTCommandLogger());
-    }
-
-    private void logBoth(IPlayer player, String s) {
-        MineTweakerAPI.logCommand(s);
-        if (player != null)
-            player.sendChat(s);
     }
 
     private void logBarrelRecipes(IPlayer player) {
@@ -186,38 +181,6 @@ public class AMTCommandLogger implements ICommandFunction {
                 o += ", \"" + recipe.getMilkTex() + "\"";
             }
             MineTweakerAPI.logCommand(o + ");");
-        }
-    }
-
-    private String getItemDeclaration(ItemStack stack) {
-        if (stack == null) {
-            return "null";
-        }
-        return MineTweakerMC.getIItemStack(stack).toString();
-    }
-    private String getItemDeclaration(Fluid stack) {
-        return "<liquid:" + stack.getName() + ">";
-    }
-    private String getItemDeclaration(FluidStack stack) {
-        return "<liquid:" + stack.getFluid().getName() + "> * " + stack.amount;
-    }
-    private String getObjectDeclaration(Object stack) {
-        if (stack instanceof String) {
-            return "<ore:" + stack + ">";
-        } else if (stack instanceof ItemStack) {
-            return getItemDeclaration((ItemStack) stack);
-        } else if (stack instanceof Item) {
-            return getItemDeclaration(new ItemStack((Item) stack, 1));
-        } else if (stack instanceof Block) {
-            return getItemDeclaration(new ItemStack((Block) stack, 1));
-        } else if (stack instanceof Fluid) {
-            return getItemDeclaration((Fluid) stack);
-        } else if (stack instanceof FluidStack) {
-            return getItemDeclaration((FluidStack) stack);
-        } else if (stack == null) {
-            return "null";
-        } else {
-            return "?????";
         }
     }
 
