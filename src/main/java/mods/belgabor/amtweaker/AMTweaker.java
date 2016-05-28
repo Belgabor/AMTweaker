@@ -13,6 +13,8 @@ import mods.belgabor.amtweaker.mods.amt.loggers.AMTCommandLogger;
 import mods.belgabor.amtweaker.mods.emt.EMT;
 import mods.belgabor.amtweaker.mods.emt.configuration.EMTConfiguration;
 import mods.belgabor.amtweaker.mods.emt.loggers.EMTCommandLogger;
+import mods.belgabor.amtweaker.mods.mce.MCE;
+import mods.belgabor.amtweaker.mods.mce.loggers.MCECommandLogger;
 import mods.belgabor.amtweaker.util.TweakerPlugin;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
@@ -22,7 +24,7 @@ import org.apache.logging.log4j.Logger;
 
 import java.io.File;
 
-@Mod(modid = AMTweaker.MODID, version = AMTweaker.VERSION, name = "AMTweaker", dependencies = "required-after:MineTweaker3;required-after:DCsAppleMilk;after:ModTweaker;after:AWWayofTime;after:DCsEcoMT")
+@Mod(modid = AMTweaker.MODID, version = AMTweaker.VERSION, name = "AMTweaker", dependencies = "required-after:MineTweaker3;after:DCsAppleMilk;after:ModTweaker;after:AWWayofTime;after:DCsEcoMT;after:mceconomy2")
 public class AMTweaker implements IEventHandler<MineTweakerImplementationAPI.ReloadEvent>
 {
     public static final String MODID = "AMTweaker";
@@ -53,6 +55,7 @@ public class AMTweaker implements IEventHandler<MineTweakerImplementationAPI.Rel
     {
         TweakerPlugin.register(AMT.MODID, AMT.class);
         TweakerPlugin.register(EMT.MODID, EMT.class);
+        TweakerPlugin.register(MCE.MODID, MCE.class);
     }
 
     @EventHandler
@@ -84,5 +87,7 @@ public class AMTweaker implements IEventHandler<MineTweakerImplementationAPI.Rel
             AMTCommandLogger.register();
         if (Loader.isModLoaded(EMT.MODID))
             EMTCommandLogger.register();
+        if (Loader.isModLoaded(MCE.MODID))
+            MCECommandLogger.register();
     }
 }

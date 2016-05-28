@@ -19,19 +19,19 @@ public class CommandLoggerBase {
             player.sendChat(s);
     }
 
-    protected String getItemDeclaration(ItemStack stack) {
+    protected static String getItemDeclaration(ItemStack stack) {
         if (stack == null) {
             return "null";
         }
         return MineTweakerMC.getIItemStack(stack).toString();
     }
-    protected String getItemDeclaration(Fluid stack) {
+    protected static String getItemDeclaration(Fluid stack) {
         return "<liquid:" + stack.getName() + ">";
     }
-    protected String getItemDeclaration(FluidStack stack) {
+    protected static String getItemDeclaration(FluidStack stack) {
         return "<liquid:" + stack.getFluid().getName() + "> * " + stack.amount;
     }
-    protected String getObjectDeclaration(Object stack) {
+    public static String getObjectDeclaration(Object stack) {
         if (stack instanceof String) {
             return "<ore:" + stack + ">";
         } else if (stack instanceof ItemStack) {
