@@ -15,6 +15,8 @@ import mods.belgabor.amtweaker.mods.emt.configuration.EMTConfiguration;
 import mods.belgabor.amtweaker.mods.emt.loggers.EMTCommandLogger;
 import mods.belgabor.amtweaker.mods.mce.MCE;
 import mods.belgabor.amtweaker.mods.mce.loggers.MCECommandLogger;
+import mods.belgabor.amtweaker.mods.vanilla.Vanilla;
+import mods.belgabor.amtweaker.mods.vanilla.loggers.VanillaCommandLogger;
 import mods.belgabor.amtweaker.util.TweakerPlugin;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
@@ -53,6 +55,7 @@ public class AMTweaker implements IEventHandler<MineTweakerImplementationAPI.Rel
     @EventHandler
     public void init(FMLInitializationEvent event)
     {
+        new Vanilla();
         TweakerPlugin.register(AMT.MODID, AMT.class);
         TweakerPlugin.register(EMT.MODID, EMT.class);
         TweakerPlugin.register(MCE.MODID, MCE.class);
@@ -83,6 +86,7 @@ public class AMTweaker implements IEventHandler<MineTweakerImplementationAPI.Rel
     }
 
     private void registerLoggers() {
+        VanillaCommandLogger.register();
         if (Loader.isModLoaded(AMT.MODID))
             AMTCommandLogger.register();
         if (Loader.isModLoaded(EMT.MODID))
