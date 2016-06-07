@@ -23,6 +23,7 @@ import static mods.belgabor.amtweaker.helpers.StackHelper.areEqualNull;
 @ZenClass("mods.amt.Processor")
 public class Processor {
     // Adding a new processor recipe
+    @Deprecated
     @ZenMethod
     public static void addRecipe(IItemStack output, IItemStack secondary, IIngredient[] inputs, boolean isFoodRecipe, float secondaryChance, boolean forceReturnContainer, int tier) {
         doAddRecipe(output, secondary, inputs, isFoodRecipe, secondaryChance, forceReturnContainer, tier);
@@ -46,6 +47,27 @@ public class Processor {
     @ZenMethod
     public static void addRecipe(IItemStack output, IIngredient[] inputs, boolean isFoodRecipe) {
         doAddRecipe(output, null, inputs, isFoodRecipe, null, false, isFoodRecipe?-1:1);
+    }
+
+        // Adding a new processor recipe with tier
+    @ZenMethod
+    public static void addRecipeTier(IItemStack output, IItemStack secondary, IIngredient[] inputs, int tier, float secondaryChance, boolean forceReturnContainer) {
+        doAddRecipe(output, secondary, inputs, false, secondaryChance, forceReturnContainer, tier);
+    }
+
+    @ZenMethod
+    public static void addRecipeTier(IItemStack output, IItemStack secondary, IIngredient[] inputs, int tier, float secondaryChance) {
+        doAddRecipe(output, secondary, inputs, false, secondaryChance, false, tier);
+    }
+
+    @ZenMethod
+    public static void addRecipeTier(IItemStack output, IItemStack secondary, IIngredient[] inputs, int tier) {
+        doAddRecipe(output, secondary, inputs, false, null, false, tier);
+    }
+
+    @ZenMethod
+    public static void addRecipeTier(IItemStack output, IIngredient[] inputs, int tier) {
+        doAddRecipe(output, null, inputs, false, null, false, tier);
     }
 
     private static void doAddRecipe(IItemStack output, IItemStack secondary, IIngredient[] inputs, boolean isFoodRecipe, Float secondaryChance, boolean forceReturnContainer, int tier) {
