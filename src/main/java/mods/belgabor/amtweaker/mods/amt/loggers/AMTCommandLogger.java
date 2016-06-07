@@ -26,7 +26,6 @@ package mods.belgabor.amtweaker.mods.amt.loggers;
 
 import com.google.common.base.Joiner;
 import minetweaker.MineTweakerAPI;
-import minetweaker.api.minecraft.MineTweakerMC;
 import minetweaker.api.player.IPlayer;
 import minetweaker.api.server.ICommandFunction;
 import mods.belgabor.amtweaker.util.CommandLoggerBase;
@@ -35,8 +34,6 @@ import mods.defeatedcrow.api.charge.ChargeItemManager;
 import mods.defeatedcrow.api.charge.IChargeItem;
 import mods.defeatedcrow.api.recipe.*;
 import mods.defeatedcrow.recipe.BrewingRecipe;
-import net.minecraft.block.Block;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;

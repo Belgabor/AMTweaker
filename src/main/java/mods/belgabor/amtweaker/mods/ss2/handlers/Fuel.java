@@ -52,7 +52,7 @@ public class Fuel {
             return;
         }
         if (iInput instanceof String) {
-            if (handler.getOreList().containsKey((String) iInput)) {
+            if (handler.getOreList().containsKey(iInput)) {
                 MineTweakerAPI.getLogger().logError(String.format("%s: Fuel item %s already set", name, input.toString()));
                 return;
             }
@@ -86,7 +86,7 @@ public class Fuel {
             return;
         }
         if (iInput instanceof String) {
-            Integer test = handler.getOreList().get((String) iInput);
+            Integer test = handler.getOreList().get(iInput);
             if (test == null) {
                 MineTweakerAPI.getLogger().logError(String.format("%s: Fuel %s not found.", name, fuel.toString()));
                 return;
@@ -147,7 +147,7 @@ public class Fuel {
         public void undo() {
             if (applied) {
                 if (fuel instanceof String) {
-                    handler.getOreList().remove((String) fuel);
+                    handler.getOreList().remove(fuel);
                     applied = false;
                 } else if (fuel instanceof ItemStack){
                     ItemStack temp = getActualItemStack(handler, (ItemStack) fuel);
@@ -212,8 +212,8 @@ public class Fuel {
         public void apply() {
             if (!applied) {
                 if (fuel instanceof String) {
-                    amount = handler.getOreList().get((String) fuel);
-                    handler.getOreList().remove((String) fuel);
+                    amount = handler.getOreList().get(fuel);
+                    handler.getOreList().remove(fuel);
                     applied = true;
                 } else if (fuel instanceof ItemStack){
                     ItemStack temp = getActualItemStack(handler, (ItemStack) fuel);

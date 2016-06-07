@@ -1,27 +1,20 @@
 package mods.belgabor.amtweaker.mods.vanilla.commands;
 
 import com.google.common.base.Joiner;
-import minetweaker.MineTweakerAPI;
-import minetweaker.api.item.IItemStack;
-import minetweaker.api.player.IPlayer;
 import mods.belgabor.amtweaker.AMTweaker;
 import mods.belgabor.amtweaker.util.CommandLoggerBase;
 import net.minecraft.block.Block;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.*;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.ChunkCoordinates;
-import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraftforge.oredict.OreDictionary;
 
 import java.io.*;
 import java.util.*;
-
-import static mods.belgabor.amtweaker.helpers.InputHelper.toStack;
 
 /**
  * Created by Belgabor on 03.06.2016.

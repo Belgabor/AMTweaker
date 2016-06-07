@@ -103,6 +103,7 @@ public class AMTweaker implements IEventHandler<MineTweakerImplementationAPI.Rel
 
     private void ensureConfDir() {
         if (!confDir.exists()) {
+            //noinspection ResultOfMethodCallIgnored
             confDir.mkdirs();
         }
     }

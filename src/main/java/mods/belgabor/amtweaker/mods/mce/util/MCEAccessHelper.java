@@ -1,9 +1,7 @@
 package mods.belgabor.amtweaker.mods.mce.util;
 
-import mods.belgabor.amtweaker.AMTweaker;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;
-import org.apache.logging.log4j.Level;
 import shift.mceconomy2.ShopManager;
 import shift.mceconomy2.api.MCEconomyAPI;
 import shift.mceconomy2.api.purchase.IPurchaseItem;

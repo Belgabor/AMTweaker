@@ -36,7 +36,7 @@ public class FluidRecipe {
             return;
         }
         if (iInput instanceof String) {
-            if (handler.getOreList().containsKey((String) iInput)) {
+            if (handler.getOreList().containsKey(iInput)) {
                 MineTweakerAPI.getLogger().logError(String.format("%s: Input item %s already has a recipe", name, input.toString()));
                 return;
             }
@@ -100,7 +100,7 @@ public class FluidRecipe {
         public void undo() {
             if (applied) {
                 if (input instanceof String) {
-                    handler.getOreList().remove((String) input);
+                    handler.getOreList().remove(input);
                     applied = false;
                 } else if (input instanceof ItemStack){
                     ItemStack temp = getActualItemStack(handler, (ItemStack) input);
@@ -165,7 +165,7 @@ public class FluidRecipe {
                 return;
             }
             if (iInput instanceof String) {
-                Object[] test = handler.getOreList().get((String) iInput);
+                Object[] test = handler.getOreList().get(iInput);
                 if (test == null || !iOutputLiquid.isFluidStackIdentical((FluidStack) test[1]) || !ItemStack.areItemStacksEqual(iOutput, (ItemStack) test[0])) {
                     MineTweakerAPI.getLogger().logError(String.format("%s: No recipe for %s to %s/%s found.", name, input.toString(), outputLiquid.toString(), output==null?"-":output.toString()));
                     return;
@@ -183,6 +183,7 @@ public class FluidRecipe {
         MineTweakerAPI.apply(new FluidRecipeRemove(handler, name, iOutputLiquid, output, iInput));
     }
 
+    @SuppressWarnings("SuspiciousMethodCalls")
     private static class FluidRecipeRemove implements IUndoableAction {
         private final IFluidRecipe handler;
         private final String name;
@@ -229,7 +230,7 @@ public class FluidRecipe {
                     }
                     applied = true;
                 } else if (input instanceof String) {
-                    handler.getOreList().remove((String) input);
+                    handler.getOreList().remove(input);
                     applied = true;
                 } else if (input instanceof ItemStack){
                     ItemStack temp = getActualItemStack(handler, (ItemStack) input);

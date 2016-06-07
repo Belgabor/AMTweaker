@@ -161,24 +161,20 @@ public class Processor {
         @Override
         public void apply() {
             recipes.clear();
-            for (IProcessorRecipe r : RecipeRegisterManager.processorRecipe.getRecipes()) {
-                if (r.getOutput() != null) {
-                    if (stack.getItemDamage() == OreDictionary.WILDCARD_VALUE) {
-                        if (stack.getItem() == r.getOutput().getItem()) {
-                            recipes.add(r);
-                        }
-                    } else if (areEqual(r.getOutput(), stack)) {
+            RecipeRegisterManager.processorRecipe.getRecipes().stream().filter(r -> r.getOutput() != null).forEachOrdered(r -> {
+                if (stack.getItemDamage() == OreDictionary.WILDCARD_VALUE) {
+                    if (stack.getItem() == r.getOutput().getItem()) {
                         recipes.add(r);
                     }
+                } else if (areEqual(r.getOutput(), stack)) {
+                    recipes.add(r);
                 }
-            }
+            });
 
             if (recipes.size() == 0) {
                 MineTweakerAPI.getLogger().logWarning("No processor recipe for " + getRecipeInfo() + " found.");
             } else {
-                for(Object o: recipes) {
-                    list.remove(o);
-                }
+                recipes.forEach(list::remove);
             }
         }
 

@@ -68,6 +68,7 @@ public class InputHelper {
                 }
                 return t;
             }
+            //noinspection ConstantConditions
             return (ItemStack) internal;
         }
     }

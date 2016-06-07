@@ -6,7 +6,6 @@ import caveworld.api.ICaveVein;
 import caveworld.api.ICaveVeinManager;
 import com.google.common.base.Joiner;
 import minetweaker.MineTweakerAPI;
-import minetweaker.api.item.IItemStack;
 import minetweaker.api.player.IPlayer;
 import minetweaker.api.server.ICommandFunction;
 import mods.belgabor.amtweaker.AMTweaker;
@@ -19,9 +18,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
-import java.util.Set;
-
-import static mods.belgabor.amtweaker.helpers.InputHelper.toStack;
 
 /**
  * Created by Belgabor on 03.06.2016.

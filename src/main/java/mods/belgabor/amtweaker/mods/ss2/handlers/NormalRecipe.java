@@ -34,7 +34,7 @@ public class NormalRecipe {
             return;
         }
         if (iInput instanceof String) {
-            if (handler.getOreList().containsKey((String) iInput)) {
+            if (handler.getOreList().containsKey(iInput)) {
                 MineTweakerAPI.getLogger().logError(String.format("%s: Input item %s already has a recipe", name, input.toString()));
                 return;
             }
@@ -96,7 +96,7 @@ public class NormalRecipe {
         public void undo() {
             if (applied) {
                 if (input instanceof String) {
-                    handler.getOreList().remove((String) input);
+                    handler.getOreList().remove(input);
                     applied = false;
                 } else if (input instanceof ItemStack){
                     ItemStack temp = getActualItemStack(handler, (ItemStack) input);
@@ -159,7 +159,7 @@ public class NormalRecipe {
                 return;
             }
             if (iInput instanceof String) {
-                ItemStack test = handler.getOreList().get((String) iInput);
+                ItemStack test = handler.getOreList().get(iInput);
                 if (test == null || !ItemStack.areItemStacksEqual(test, toStack(output))) {
                     MineTweakerAPI.getLogger().logError(String.format("%s: No recipe for %s to %s found.", name, input.toString(), output.toString()));
                     return;
@@ -177,6 +177,7 @@ public class NormalRecipe {
         MineTweakerAPI.apply(new NormalRecipeRemove(handler, name, output, iInput));
     }
 
+    @SuppressWarnings("SuspiciousMethodCalls")
     private static class NormalRecipeRemove implements IUndoableAction {
         private final INormalRecipe handler;
         private final String name;
@@ -221,7 +222,7 @@ public class NormalRecipe {
                     }
                     applied = true;
                 } else if (input instanceof String) {
-                    handler.getOreList().remove((String) input);
+                    handler.getOreList().remove(input);
                     applied = true;
                 } else if (input instanceof ItemStack){
                     ItemStack temp = getActualItemStack(handler, (ItemStack) input);

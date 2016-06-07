@@ -3,7 +3,6 @@ package mods.belgabor.amtweaker.mods.ss2.handlers;
 import minetweaker.api.item.IIngredient;
 import minetweaker.api.item.IItemStack;
 import shift.sextiarysector.SSRecipes;
-import shift.sextiarysector.api.recipe.RecipeAPI;
 import stanhebben.zenscript.annotations.ZenClass;
 import stanhebben.zenscript.annotations.ZenMethod;
 

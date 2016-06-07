@@ -49,11 +49,11 @@ public class Price {
         }
         ItemStack cItem = toStack(item, true);
         if (cItem == null) {
-            MineTweakerAPI.getLogger().logError(String.format("Set shop price: Item must not be null."));
+            MineTweakerAPI.getLogger().logError("Set shop price: Item must not be null.");
             return;
         }
         if (MCEAccessHelper.findProduct(cShop, cItem) != null) {
-            MineTweakerAPI.getLogger().logError(String.format("Set shop price: Item already sold (changing prices of existing items is not supported)."));
+            MineTweakerAPI.getLogger().logError("Set shop price: Item already sold (changing prices of existing items is not supported).");
             return;
         }
         MineTweakerAPI.apply(new ProductPriceSet(cShop, cItem, price));

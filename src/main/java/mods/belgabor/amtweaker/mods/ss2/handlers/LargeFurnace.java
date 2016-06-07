@@ -4,15 +4,10 @@ import minetweaker.IUndoableAction;
 import minetweaker.MineTweakerAPI;
 import minetweaker.api.item.IIngredient;
 import minetweaker.api.item.IItemStack;
-import mods.belgabor.amtweaker.mods.amt.util.AMTListAddition;
-import mods.belgabor.amtweaker.util.BaseListWildcardRemoval;
 import mods.belgabor.amtweaker.util.CommandLoggerBase;
-import mods.defeatedcrow.api.recipe.IProcessorRecipe;
-import mods.defeatedcrow.api.recipe.RecipeRegisterManager;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.ShapelessRecipes;
-import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 import net.minecraftforge.oredict.ShapelessOreRecipe;
 import shift.sextiarysector.recipe.FurnaceCraftingManager;
@@ -25,7 +20,6 @@ import static mods.belgabor.amtweaker.helpers.InputHelper.toObjects;
 import static mods.belgabor.amtweaker.helpers.InputHelper.toShapedObjects;
 import static mods.belgabor.amtweaker.helpers.InputHelper.toStack;
 import static mods.belgabor.amtweaker.helpers.StackHelper.areEqual;
-import static mods.belgabor.amtweaker.helpers.StackHelper.areEqualNull;
 
 @ZenClass("mods.ss2.LargeFurnace")
 public class LargeFurnace {
@@ -105,7 +99,7 @@ public class LargeFurnace {
             }
             return xRecipe instanceof IRecipe;
         })        
-        .forEach(xRecipe -> {
+        .forEachOrdered(xRecipe -> {
             if (areEqual(stack, ((IRecipe) xRecipe).getRecipeOutput())) {
                 recipe[0] = (IRecipe) xRecipe;
             }
@@ -193,7 +187,7 @@ public class LargeFurnace {
 
     private static class FurnaceRemove implements IUndoableAction {
         private final ItemStack output;
-        private ArrayList<IRecipe> recipes = new ArrayList<>();
+        private final ArrayList<IRecipe> recipes = new ArrayList<>();
         private boolean applied = false;
 
         public FurnaceRemove(ItemStack output, int type) {
@@ -207,7 +201,7 @@ public class LargeFurnace {
                 }
                 return xRecipe instanceof IRecipe;
             })
-            .forEach(xRecipe -> {
+            .forEachOrdered(xRecipe -> {
                 if (areEqual(output, ((IRecipe) xRecipe).getRecipeOutput())) {
                     recipes.add((IRecipe) xRecipe);
                 }
@@ -218,7 +212,7 @@ public class LargeFurnace {
         @Override
         public void apply() {
             if (!applied) {
-                recipes.stream().forEach(recipe -> FurnaceCraftingManager.getInstance().getRecipeList().remove(recipe));
+                recipes.stream().forEachOrdered(recipe -> FurnaceCraftingManager.getInstance().getRecipeList().remove(recipe));
                 applied = true;
             }
         }
@@ -231,7 +225,7 @@ public class LargeFurnace {
         @Override
         public void undo() {
             if (applied) {
-                recipes.stream().forEach(recipe -> FurnaceCraftingManager.getInstance().addRecipe(recipe));
+                recipes.stream().forEachOrdered(recipe -> FurnaceCraftingManager.getInstance().addRecipe(recipe));
                 applied = false;
             }
         }

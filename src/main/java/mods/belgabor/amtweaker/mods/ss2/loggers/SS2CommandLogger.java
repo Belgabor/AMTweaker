@@ -23,8 +23,6 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static mods.defeatedcrow.recipe.BrewingRecipe.recipe;
-
 /**
  * Created by Belgabor on 27.05.2016.
  */
