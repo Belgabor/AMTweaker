@@ -30,25 +30,30 @@ public class Processor {
 
     @ZenMethod
     public static void addRecipe(IItemStack output, IItemStack secondary, IIngredient[] inputs, boolean isFoodRecipe, float secondaryChance, boolean forceReturnContainer) {
-        doAddRecipe(output, secondary, inputs, isFoodRecipe, secondaryChance, forceReturnContainer, 1);
+        doAddRecipe(output, secondary, inputs, isFoodRecipe, secondaryChance, forceReturnContainer, isFoodRecipe?-1:1);
     }
 
     @ZenMethod
     public static void addRecipe(IItemStack output, IItemStack secondary, IIngredient[] inputs, boolean isFoodRecipe, float secondaryChance) {
-        doAddRecipe(output, secondary, inputs, isFoodRecipe, secondaryChance, false, 1);
+        doAddRecipe(output, secondary, inputs, isFoodRecipe, secondaryChance, false, isFoodRecipe?-1:1);
     }
 
     @ZenMethod
     public static void addRecipe(IItemStack output, IItemStack secondary, IIngredient[] inputs, boolean isFoodRecipe) {
-        doAddRecipe(output, secondary, inputs, isFoodRecipe, null, false, 1);
+        doAddRecipe(output, secondary, inputs, isFoodRecipe, null, false, isFoodRecipe?-1:1);
     }
 
     @ZenMethod
     public static void addRecipe(IItemStack output, IIngredient[] inputs, boolean isFoodRecipe) {
-        doAddRecipe(output, null, inputs, isFoodRecipe, null, false, 1);
+        doAddRecipe(output, null, inputs, isFoodRecipe, null, false, isFoodRecipe?-1:1);
     }
 
     private static void doAddRecipe(IItemStack output, IItemStack secondary, IIngredient[] inputs, boolean isFoodRecipe, Float secondaryChance, boolean forceReturnContainer, int tier) {
+        if (isFoodRecipe) {
+            if (tier>=0)
+                MineTweakerAPI.getLogger().logWarning("Processor: Food processor recipes only support tier -1");
+            tier = -1;
+        }
         if (inputs == null) {
             MineTweakerAPI.getLogger().logError("Processor: Input set must not be null!");
             return;

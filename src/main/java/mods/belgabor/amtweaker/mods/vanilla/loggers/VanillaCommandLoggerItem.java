@@ -14,14 +14,12 @@ import static mods.belgabor.amtweaker.helpers.InputHelper.toStack;
 /**
  * Created by Belgabor on 03.06.2016.
  */
-public class VanillaCommandLogger extends CommandLoggerBase implements ICommandFunction {
+public class VanillaCommandLoggerItem extends CommandLoggerBase implements ICommandFunction {
     public static void register() {
         MineTweakerAPI.server.addMineTweakerCommand("handextra", new String[] {
-                "/minetweaker mce price",
-                "    list MCEconomy2 item prices",
                 "/minetweaker handextra",
                 "    dump extra information about the held item"
-        }, new VanillaCommandLogger());
+        }, new VanillaCommandLoggerItem());
     }
     
     @Override

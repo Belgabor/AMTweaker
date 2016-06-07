@@ -10,17 +10,25 @@ import minetweaker.MineTweakerImplementationAPI;
 import minetweaker.util.IEventHandler;
 import mods.belgabor.amtweaker.mods.amt.AMT;
 import mods.belgabor.amtweaker.mods.amt.loggers.AMTCommandLogger;
+import mods.belgabor.amtweaker.mods.cw2.CW2;
+import mods.belgabor.amtweaker.mods.cw2.loggers.CW2CommandLogger;
 import mods.belgabor.amtweaker.mods.emt.EMT;
 import mods.belgabor.amtweaker.mods.emt.configuration.EMTConfiguration;
 import mods.belgabor.amtweaker.mods.emt.loggers.EMTCommandLogger;
 import mods.belgabor.amtweaker.mods.mce.MCE;
 import mods.belgabor.amtweaker.mods.mce.loggers.MCECommandLogger;
+import mods.belgabor.amtweaker.mods.ss2.SS2;
+import mods.belgabor.amtweaker.mods.ss2.loggers.SS2CommandLogger;
 import mods.belgabor.amtweaker.mods.vanilla.Vanilla;
-import mods.belgabor.amtweaker.mods.vanilla.loggers.VanillaCommandLogger;
+import mods.belgabor.amtweaker.mods.vanilla.commands.VanillaCommandBlockstats;
+import mods.belgabor.amtweaker.mods.vanilla.loggers.VanillaCommandLoggerItem;
 import mods.belgabor.amtweaker.util.TweakerPlugin;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
+import net.minecraft.command.ICommandManager;
+import net.minecraft.command.ServerCommandManager;
+import net.minecraft.server.MinecraftServer;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
 
@@ -31,20 +39,25 @@ public class AMTweaker implements IEventHandler<MineTweakerImplementationAPI.Rel
 {
     public static final String MODID = "AMTweaker";
     public static final String VERSION = "0.6";
-
+    
+    @Mod.Instance(MODID)
+    public static AMTweaker INSTANCE;
+    
     public static File confDir;
+    public static File logsDir;
     public static Logger logger;
     public static final Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
     public static void log(Level level, String message, Object ... args) {
         logger.log(level, String.format(message, args));
     }
-
+    
     @EventHandler
     public void preInit(FMLPreInitializationEvent event)
     {
         logger = event.getModLog();
         confDir = new File(event.getModConfigurationDirectory(), "AMTweaker/");
+        logsDir = new File("logs/");
 
         if (Loader.isModLoaded(EMT.MODID)) {
             ensureConfDir();
@@ -59,6 +72,7 @@ public class AMTweaker implements IEventHandler<MineTweakerImplementationAPI.Rel
         TweakerPlugin.register(AMT.MODID, AMT.class);
         TweakerPlugin.register(EMT.MODID, EMT.class);
         TweakerPlugin.register(MCE.MODID, MCE.class);
+        TweakerPlugin.register(SS2.MODID, SS2.class);
     }
 
     @EventHandler
@@ -71,8 +85,16 @@ public class AMTweaker implements IEventHandler<MineTweakerImplementationAPI.Rel
 
     @EventHandler
     public void onServerStart(FMLServerStartingEvent event) {
+        registerCommands();
         registerLoggers();
         MineTweakerImplementationAPI.onReloadEvent(this);
+    }
+
+    private void registerCommands() {
+        MinecraftServer server = MinecraftServer.getServer();
+        ICommandManager command = server.getCommandManager();
+        ServerCommandManager manager = (ServerCommandManager) command;
+        manager.registerCommand(new VanillaCommandBlockstats());        
     }
 
     public void handle(MineTweakerImplementationAPI.ReloadEvent event) {
@@ -86,12 +108,16 @@ public class AMTweaker implements IEventHandler<MineTweakerImplementationAPI.Rel
     }
 
     private void registerLoggers() {
-        VanillaCommandLogger.register();
+        VanillaCommandLoggerItem.register();
         if (Loader.isModLoaded(AMT.MODID))
             AMTCommandLogger.register();
+        if (Loader.isModLoaded(CW2.MODID))
+            CW2CommandLogger.register();
         if (Loader.isModLoaded(EMT.MODID))
             EMTCommandLogger.register();
         if (Loader.isModLoaded(MCE.MODID))
             MCECommandLogger.register();
+        if (Loader.isModLoaded(SS2.MODID))
+            SS2CommandLogger.register();
     }
 }

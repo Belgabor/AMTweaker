@@ -119,12 +119,30 @@ public class InputHelper {
     }
 
     public static Object[] toShapedObjects(IIngredient[][] ingredients) {
+        return toShapedObjects(ingredients, false);
+    }
+    
+    public static Object[] toShapedObjects(IIngredient[][] ingredients, boolean trim) {
         if (ingredients == null) return null;
         else {
+            int h = trim?ingredients.length:3;
+            int w = 0;
+            if (trim) {
+                for (IIngredient[] test: ingredients) {
+                    if (test.length > w)
+                        w = test.length;
+                }
+            } else {
+                w = 3;
+            }
+            
             ArrayList prep = new ArrayList();
-            prep.add("abc");
-            prep.add("def");
-            prep.add("ghi");
+            prep.add("abc".substring(0, w));
+            if (h>=2)
+                prep.add("def".substring(0, w));
+            if (h>=3)
+                prep.add("ghi".substring(0, w));
+            
             char[][] map = new char[][] { { 'a', 'b', 'c' }, { 'd', 'e', 'f' }, { 'g', 'h', 'i' } };
             for (int x = 0; x < ingredients.length; x++) {
                 if (ingredients[x] != null) {

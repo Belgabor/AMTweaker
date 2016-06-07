@@ -26,8 +26,8 @@ configFile.withReader {
     project.ext.config = new ConfigSlurper().parse prop
 }
 
-sourceCompatibility = JavaVersion.VERSION_1_7
-targetCompatibility = JavaVersion.VERSION_1_7
+sourceCompatibility = JavaVersion.VERSION_1_8
+targetCompatibility = JavaVersion.VERSION_1_8
 
 version = "${config.minecraft_version}-${config.mod_version}"
 group= "com.github.belgabor.amtweaker" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
@@ -41,7 +41,7 @@ minecraft {
 
 [compileJava, compileTestJava,compileApiJava,recompMinecraft].each{
     it.options.encoding = 'UTF-8'
-    it.options.compilerArgs += ['-source', '1.7', '-target', '1.7', '-Xlint:unchecked']
+    it.options.compilerArgs += ['-source', '1.8', '-target', '1.8', '-Xlint:unchecked']
 }
 
 dependencies {

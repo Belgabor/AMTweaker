@@ -24,6 +24,7 @@
 
 package mods.belgabor.amtweaker.mods.amt.loggers;
 
+import com.google.common.base.Joiner;
 import minetweaker.MineTweakerAPI;
 import minetweaker.api.minecraft.MineTweakerMC;
 import minetweaker.api.player.IPlayer;
@@ -40,6 +41,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 
+import java.util.ArrayList;
 import java.util.Map;
 
 /**
@@ -89,10 +91,10 @@ public class AMTCommandLogger extends CommandLoggerBase implements ICommandFunct
             FluidStack secondary = recipe.getSecondary();
             String o = "mods.amt.Evaporator.addRecipe(";
             if (output != null)
-                o += getItemDeclaration(output) + ", ";
+                o += getFullObjectDeclaration(output) + ", ";
             if (secondary != null)
                 o += getItemDeclaration(secondary) + ", ";
-            o += getItemDeclaration(input);
+            o += getFullObjectDeclaration(input);
             if (!recipe.returnContainer())
                 o += ", false";
             o += ");";
@@ -102,7 +104,7 @@ public class AMTCommandLogger extends CommandLoggerBase implements ICommandFunct
 
     private void logIceRecipes() {
         for (IIceRecipe recipe: RecipeRegisterManager.iceRecipe.getRecipeList()) {
-            String output = "mods.amt.IceMaker.addRecipe(" + getItemDeclaration(recipe.getOutput()) + ", " + getItemDeclaration(recipe.getInput());
+            String output = "mods.amt.IceMaker.addRecipe(" + getFullObjectDeclaration(recipe.getOutput()) + ", " + getItemDeclaration(recipe.getInput());
             ItemStack container = recipe.getContainer();
             if (container != null)
                 output += ", " + getItemDeclaration(container);
@@ -137,35 +139,15 @@ public class AMTCommandLogger extends CommandLoggerBase implements ICommandFunct
 
     private void logProcessorRecipes() {
         for (IProcessorRecipe recipe: RecipeRegisterManager.processorRecipe.getRecipes()) {
-            String o = "mods.amt.Processor.addRecipe(" + getItemDeclaration(recipe.getOutput());
-            float sec = recipe.getChance();
-            boolean ret = recipe.forceReturnContainer();
-            if ((recipe.getSecondary() != null) | (sec != 0) | ret) {
-                o += ", " + getItemDeclaration(recipe.getSecondary());
-            }
-            o += ", [";
-            boolean first = true;
-            for (Object x: recipe.getInput()) {
-                if (!first) {
-                    o += ", ";
-                } else {
-                    first = false;
-                }
-                o += getObjectDeclaration(x);
-            }
-            o += "], ";
-            if (recipe.isFoodRecipe()) {
-                o += "true";
-            } else {
-                o += "false";
-            }
-            if ((sec != 0) | ret) {
-                o += ", " + sec;
-            }
-            if (ret) {
-                o += ", true";
-            }
-            MineTweakerAPI.logCommand(o + ");");
+            ArrayList<String> inputs = new ArrayList<>();
+            for (Object x: recipe.getInput())
+                inputs.add(getObjectDeclaration(x));
+            
+            String o = String.format("mods.amt.Processor.addRecipe(%s, %s, [%s], %s, %f, %s, %d);", 
+                    getFullObjectDeclaration(recipe.getOutput()), getFullObjectDeclaration(recipe.getSecondary()),
+                    Joiner.on(", ").join(inputs), getBoolean(recipe.isFoodRecipe()), recipe.getChance(),
+                    getBoolean(recipe.forceReturnContainer()), recipe.getRecipeTier());
+            MineTweakerAPI.logCommand(o);
         }
     }
 

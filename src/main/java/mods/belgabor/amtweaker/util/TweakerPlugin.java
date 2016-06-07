@@ -31,7 +31,7 @@ import java.util.ArrayList;
 import cpw.mods.fml.common.Loader;
 
 public class TweakerPlugin {
-    private static final ArrayList<String> isLoaded = new ArrayList();
+    private static final ArrayList<String> isLoaded = new ArrayList<String>();
 
     public static void register(String mod, Class clazz) {
         if (Loader.isModLoaded(mod)) {
