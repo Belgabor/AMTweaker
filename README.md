@@ -7,6 +7,8 @@ A Minecraft mod to support [MineTweaker](http://minetweaker3.powerofbytes.com/) 
 * shift02ss' [MCEconomy2](http://mods.curse.com/mc-mods/minecraft/242484-mceconomy2) and [Sextiary Sector 2](http://forum.minecraftuser.jp/viewtopic.php?t=22369)
 * Some more minor functionality for vanilla minecraft and \_kegare's [Caveworld 2](http://mods.curse.com/mc-mods/minecraft/242486-caveworld-2)
 
+Note: As of version 1.0 AMTweaker needs Java 8
+
 Documentation: [Wiki](https://github.com/Belgabor/AMTweaker/wiki)
 
 Also available on [Curse](http://www.curse.com/mc-mods/minecraft/229357-amtweaker)
