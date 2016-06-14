@@ -5,6 +5,8 @@ import minetweaker.MineTweakerAPI;
 import minetweaker.api.player.IPlayer;
 import minetweaker.api.server.ICommandFunction;
 import mods.belgabor.amtweaker.mods.mce.MCE;
+import mods.belgabor.amtweaker.mods.ss2.SS2;
+import mods.belgabor.amtweaker.mods.ss2.util.SS2AccessHelper;
 import mods.belgabor.amtweaker.mods.vanilla.util.VanillaAccessHelper;
 import mods.belgabor.amtweaker.util.CommandLoggerBase;
 import net.minecraft.item.ItemStack;
@@ -17,6 +19,7 @@ import shift.sextiarysector.SSRecipes;
 import shift.sextiarysector.api.recipe.IFluidRecipe;
 import shift.sextiarysector.api.recipe.INormalRecipe;
 import shift.sextiarysector.api.recipe.RecipeAPI;
+import shift.sextiarysector.block.BlockSandpit;
 import shift.sextiarysector.recipe.FurnaceCraftingManager;
 
 import java.util.ArrayList;
@@ -33,7 +36,9 @@ public class SS2CommandLogger extends CommandLoggerBase implements ICommandFunct
                     "/minetweaker ss2 fuels",
                     "    list Sextiary Sector 2 special fuel items",
                     "/minetweaker ss2 recipes",
-                    "    list Sextiary Sector 2 recipes to minetwekaer log"
+                    "    list Sextiary Sector 2 recipes to minetwekaer log",
+                    "/minetweaker ss2 sandpit",
+                    "    list Sextiary Sector 2 sandpit drops"
             }, new SS2CommandLogger());
         }
     }
@@ -56,6 +61,20 @@ public class SS2CommandLogger extends CommandLoggerBase implements ICommandFunct
         for (Map.Entry<String, Integer> item : SSRecipes.magicFuel.getOreList().entrySet()) {
             player.sendChat(String.format("%s - %d", getObjectDeclaration(item.getKey()), item.getValue()));
             MineTweakerAPI.logCommand(String.format("mods.ss2.Fuel.addMagic(%s, %d);", getObjectDeclaration(item.getKey()), item.getValue()));
+        }
+    }
+    
+    private void logSandpit(IPlayer player) {
+        logBoth(player, "Sandpit drops:");
+        if (SS2.available) {
+            for (BlockSandpit.ShellEntry item : SS2AccessHelper.shellList) {
+                boolean enchant = SS2AccessHelper.getShellEntry_enchant(item);
+                float damage = SS2AccessHelper.getShellEntry_damage(item);
+                player.sendChat(String.format("%s - %d (%f%s)", getObjectDeclaration(item.shell), item.itemWeight, damage, enchant?", enachanted":""));
+                MineTweakerAPI.logCommand(String.format("mods.ss2.Sandpit.add(%s, %d, %f, %s);", getObjectDeclaration(item.shell), item.itemWeight, damage, enchant?"true":"false"));
+            }
+        } else {
+            logBoth(player, "  Unable to get access");
         }
     }
     
@@ -159,6 +178,8 @@ public class SS2CommandLogger extends CommandLoggerBase implements ICommandFunct
                 logFuels(player);
             } else if (arguments[0].equalsIgnoreCase("recipes")) {
                 logRecipes(player);
+            } else if (arguments[0].equalsIgnoreCase("sandpit")) {
+                logSandpit(player);
             } else {
                 player.sendChat("Unknown subcommand: "+arguments[0]);
             }

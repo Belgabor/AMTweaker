@@ -48,7 +48,7 @@ public class VanillaCommandLoggerItem extends CommandLoggerBase implements IComm
                 logBoth(player, "  None");
             }
             if (theItem instanceof ItemPickaxe || theItem instanceof ItemSpade || theItem instanceof ItemAxe) {
-                logBoth(player, "The item class inherits from one of the primary vanilla tool classes. It is therefore likely locked to its primary function.");
+                logBoth(player, "The item class extends one of the primary vanilla tool classes. It is therefore likely locked to its primary function.");
             }
         }
     }

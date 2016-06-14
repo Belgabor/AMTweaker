@@ -1,7 +1,11 @@
 AMTweaker
 =========
 
-A Minecraft mod to support [MineTweaker](http://minetweaker3.powerofbytes.com/) customization of defeatedcrow's [Apple, Milk & Tea 2](http://forum.minecraftuser.jp/viewtopic.php?t=17657)
+A Minecraft mod to support [MineTweaker](http://minetweaker3.powerofbytes.com/) customization of:
+
+* defeatedcrow's [Apple, Milk & Tea 2](http://mods.curse.com/mc-mods/minecraft/229325-applemilktea2) and [EconomicalMilkTea](http://mods.curse.com/mc-mods/minecraft/244556-economicalmilktea)
+* shift02ss' [MCEconomy2](http://mods.curse.com/mc-mods/minecraft/242484-mceconomy2) and [Sextiary Sector 2](http://forum.minecraftuser.jp/viewtopic.php?t=22369)
+* Some more minor functionality for vanilla minecraft and \_kegare's [Caveworld 2](http://mods.curse.com/mc-mods/minecraft/242486-caveworld-2)
 
 Documentation: [Wiki](https://github.com/Belgabor/AMTweaker/wiki)
 

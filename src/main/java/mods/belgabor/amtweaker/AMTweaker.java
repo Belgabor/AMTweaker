@@ -38,7 +38,7 @@ import java.io.File;
 public class AMTweaker implements IEventHandler<MineTweakerImplementationAPI.ReloadEvent>
 {
     public static final String MODID = "AMTweaker";
-    public static final String VERSION = "0.6";
+    public static final String VERSION = "1.0";
     
     @Mod.Instance(MODID)
     public static AMTweaker INSTANCE;

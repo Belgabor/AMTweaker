@@ -17,8 +17,8 @@ public class OrderData {
     public Integer amount = 0;
     public Integer reward = 0;
     public String type = "";
-    public String season = "";
-    public String biome = "";
+    public String season = "none";
+    public String biome = "none";
     public String name = "";
 
     public OrderData(IOrder order) {
@@ -55,6 +55,8 @@ public class OrderData {
     }
 
     public OrderSeason getSeason() {
+        if (season == null)
+            return OrderSeason.NONE;
         switch (season) {
             case "spring":
                 return OrderSeason.SPRING;
@@ -72,6 +74,8 @@ public class OrderData {
     }
 
     public OrderBiome getBiome() {
+        if (biome == null)
+            return OrderBiome.NONE;
         switch (biome) {
             case "plane":
                 return OrderBiome.PLANE;

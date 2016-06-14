@@ -14,10 +14,11 @@ public class MCE {
     public static boolean available;
 
     public MCE() {
+        MineTweakerAPI.registerClass(Price.class);
+        
         available = MCEAccessHelper.init();
         if (available) {
             AMTweaker.log(Level.INFO, "Successfully gained access to MCEconomy2 classes.");
-            MineTweakerAPI.registerClass(Price.class);
         } else {
             AMTweaker.log(Level.WARN, "Could not get access to MCEconomy2 classes. Support disabled");
         }

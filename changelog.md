@@ -1,13 +1,19 @@
 Changelog
 =========
 
-Version ?
----------
+Version 1.0
+-----------
 * API updates to AMT v2.9m
 * Add: Processor tier
 * Add: 'soup' command to list soup types for fondue recipes and 'source' command to list fondue sources
 * Add: fondue source recipes
 * Change: Chocolate Fondue to generalized Fondue recipes, 'choco' command changed to 'fondue'
+* Add: EconomicalMilkTea support (diesel generator fuel, orders)
+* Add: MCEconomy2 support (Price manipulation, both selling and (in a limited fashion) shop prices)
+* Add: Sextiary Sector 2 support (all machines, .agic fuel and sandpit drops)
+* Add: Some vanilla support (tool durability, block harvest level/tool)
+* Add: Several new commands, including one for Caveworld 2
+* Change: AMT is no longer a hard dependency
 
 Version 0.5
 -----------

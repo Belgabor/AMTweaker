@@ -4,6 +4,7 @@ import minetweaker.IUndoableAction;
 import minetweaker.MineTweakerAPI;
 import minetweaker.api.item.IIngredient;
 import minetweaker.api.item.IItemStack;
+import mods.belgabor.amtweaker.mods.mce.MCE;
 import mods.belgabor.amtweaker.mods.mce.util.MCEAccessHelper;
 import mods.belgabor.amtweaker.util.CommandLoggerBase;
 import net.minecraft.item.ItemStack;
@@ -28,6 +29,10 @@ public class Price {
     // Adding a new charge item for the ice maker
     @ZenMethod
     public static void set(IIngredient item, int price) {
+        if (!MCE.available) {
+            MineTweakerAPI.getLogger().logError("MCE support not available.");
+            return;
+        }
         Object citem = toObject(item);
         if (citem == null) {
             MineTweakerAPI.getLogger().logError("Set price: item must not be null!");
@@ -42,6 +47,10 @@ public class Price {
 
     @ZenMethod
     public static void set(String shop, IItemStack item, int price) {
+        if (!MCE.available) {
+            MineTweakerAPI.getLogger().logError("MCE support not available.");
+            return;
+        }
         IShop cShop = MCEAccessHelper.findShop(shop);
         if (cShop == null) {
             MineTweakerAPI.getLogger().logError(String.format("Set shop price: Unknown or unsupported shop '%s'.", shop));
@@ -184,6 +193,10 @@ public class Price {
 
     @ZenMethod
     public static void remove(IIngredient item) {
+        if (!MCE.available) {
+            MineTweakerAPI.getLogger().logError("MCE support not available.");
+            return;
+        }
         Object citem = toObject(item, true);
         if (citem == null) {
             MineTweakerAPI.getLogger().logError("Price removal: Item may not be null!");
@@ -198,6 +211,10 @@ public class Price {
 
     @ZenMethod
     public static void remove(String shop, IItemStack item) {
+        if (!MCE.available) {
+            MineTweakerAPI.getLogger().logError("MCE support not available.");
+            return;
+        }
         IShop cShop = MCEAccessHelper.findShop(shop);
         if (cShop == null) {
             MineTweakerAPI.getLogger().logError(String.format("Remove shop price: Unknown or unsupported shop '%s'.", shop));
