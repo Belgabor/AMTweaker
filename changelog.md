@@ -1,6 +1,12 @@
 Changelog
 =========
 
+Version 1.?
+-----------
+
+* Immersive Engineering heater can now work on the SS2 Fluid Furnace, Large Furnace and Food Smokers, the latter is off by default.
+
+
 Version 1.0
 -----------
 * API updates to AMT v2.9m
@@ -14,6 +20,7 @@ Version 1.0
 * Add: Some vanilla support (tool durability, block harvest level/tool)
 * Add: Several new commands, including one for Caveworld 2
 * Change: AMT is no longer a hard dependency
+
 
 Version 0.5
 -----------

@@ -29,6 +29,8 @@ import cpw.mods.fml.common.event.FMLInitializationEvent;
 import net.minecraft.command.ICommandManager;
 import net.minecraft.command.ServerCommandManager;
 import net.minecraft.server.MinecraftServer;
+import net.minecraftforge.common.config.Configuration;
+import net.minecraftforge.common.config.Property;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
 
@@ -58,6 +60,23 @@ public class AMTweaker implements IEventHandler<MineTweakerImplementationAPI.Rel
         logger = event.getModLog();
         confDir = new File(event.getModConfigurationDirectory(), "AMTweaker/");
         logsDir = new File("logs/");
+        
+        Configuration cfg = new Configuration(event.getSuggestedConfigurationFile());
+        try {
+            cfg.load();
+            
+            cfg.setCategoryComment(SS2.MODID, "Sextiary Sector 2 specific options");
+            
+            SS2.configIEHeatFurnaces = cfg.getBoolean("IEHeatFurnaces", SS2.MODID, SS2.configIEHeatFurnaces, 
+                    "Allow the Immersive Engineering Furnace Heater to heat the Fluid and Large Furnace");
+            SS2.configIEHeatSmokers = cfg.getBoolean("IEHeatSmokers", SS2.MODID, SS2.configIEHeatSmokers,
+                    "Allow the Immersive Engineering Furnace Heater to heat the Food Smokers");
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (cfg.hasChanged())
+                cfg.save();
+        }
 
         if (Loader.isModLoaded(EMT.MODID)) {
             ensureConfDir();

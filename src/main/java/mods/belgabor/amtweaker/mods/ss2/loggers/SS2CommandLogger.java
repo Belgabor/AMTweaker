@@ -36,7 +36,7 @@ public class SS2CommandLogger extends CommandLoggerBase implements ICommandFunct
                     "/minetweaker ss2 fuels",
                     "    list Sextiary Sector 2 special fuel items",
                     "/minetweaker ss2 recipes",
-                    "    list Sextiary Sector 2 recipes to minetwekaer log",
+                    "    list Sextiary Sector 2 recipes to minetweaker log",
                     "/minetweaker ss2 sandpit",
                     "    list Sextiary Sector 2 sandpit drops"
             }, new SS2CommandLogger());
